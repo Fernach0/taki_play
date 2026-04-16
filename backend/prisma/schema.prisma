@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum Language {
+  SPANISH
+  KICHWA
+  ACHUAR
+  OTHER
+}
+
+enum QueueStatus {
+  PENDING
+  PLAYING
+  PLAYED
+  CANCELLED
+}
+
+// ─────────────────────────────────────────────
+// MODELOS
+// ─────────────────────────────────────────────
+
+model Admin {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("admins")
+}
+
+model Table {
+  id         String         @id @default(uuid())
+  number     Int            @unique
+  qrCode     String         @unique
+  isActive   Boolean        @default(true)
+  createdAt  DateTime       @default(now())
+  sessions   TableSession[]
+  queueItems QueueItem[]
+
+  @@map("tables")
+}
+
+model TableSession {
+  id         String    @id @default(uuid())
+  tableId    String
+  table      Table     @relation(fields: [tableId], references: [id])
+  clientName String?
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime?
+
+  @@map("table_sessions")
+}
+
+model Song {
+  id         String      @id @default(uuid())
+  title      String
+  artist     String
+  album      String?
+  genre      String
+  language   Language
+  duration   Int
+  demoUrl    String
+  fullUrl    String
+  coverUrl   String?
+  isActive   Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  queueItems QueueItem[]
+
+  @@map("songs")
+}
+
+model QueueItem {
+  id          String      @id @default(uuid())
+  tableId     String
+  table       Table       @relation(fields: [tableId], references: [id])
+  songId      String
+  song        Song        @relation(fields: [songId], references: [id])
+  requestedBy String?
+  status      QueueStatus @default(PENDING)
+  position    Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("queue_items")
+}
