@@ -22,7 +22,7 @@ export default function DJDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>('queue');
 
   return (
-    <div className="min-h-screen bg-dark-base text-white">
+    <div className="min-h-screen bg-dark-base text-warm-white">
       <DJHeader />
 
       {/* Tabs */}
@@ -36,8 +36,8 @@ export default function DJDashboard() {
                 className={cn(
                   'flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-all whitespace-nowrap',
                   activeTab === tab.id
-                    ? 'border-neon-purple text-neon-purple'
-                    : 'border-transparent text-gray-400 hover:text-gray-200'
+                    ? 'border-inca-gold text-inca-gold'
+                    : 'border-transparent text-soil-brown hover:text-sand-beige'
                 )}
               >
                 {tab.icon}

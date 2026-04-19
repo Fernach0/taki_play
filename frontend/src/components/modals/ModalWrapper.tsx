@@ -37,7 +37,7 @@ export function ModalWrapper({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm"
+                className="fixed inset-0 z-50 bg-[rgba(13,10,7,0.85)] backdrop-blur-sm"
               />
             </Dialog.Overlay>
 
@@ -49,22 +49,21 @@ export function ModalWrapper({
                 transition={{ duration: 0.2 }}
                 className={`fixed left-1/2 top-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2 px-4 ${sizes[size]}`}
               >
-                <div className="bg-dark-surface border border-dark-border rounded-2xl shadow-[0_0_40px_rgba(168,85,247,0.15)] overflow-hidden">
+                <div className="bg-dark-surface border border-inca-gold/30 rounded-2xl shadow-[0_0_40px_rgba(212,160,23,0.15)] overflow-hidden">
                   {/* Header */}
                   <div className="flex items-center justify-between p-6 border-b border-dark-border">
                     <div>
-                      <Dialog.Title className="text-lg font-bold text-white">
+                      <Dialog.Title className="text-lg font-bold text-warm-white font-serif">
                         {title}
                       </Dialog.Title>
-                      {description && (
-                        <Dialog.Description className="text-sm text-gray-400 mt-0.5">
-                          {description}
-                        </Dialog.Description>
-                      )}
+                      {/* Siempre presente para cumplir con ARIA — oculto si no hay descripción visible */}
+                      <Dialog.Description className={description ? 'text-sm text-sand-beige mt-0.5' : 'sr-only'}>
+                        {description ?? `Formulario: ${title}`}
+                      </Dialog.Description>
                     </div>
                     <button
                       onClick={onClose}
-                      className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+                      className="p-2 rounded-lg text-soil-brown hover:text-warm-white hover:bg-white/10 transition-colors"
                     >
                       <X className="w-5 h-5" />
                     </button>

@@ -14,7 +14,7 @@ export function SongCard({ song, onClick }: SongCardProps) {
   return (
     <button
       onClick={() => onClick(song)}
-      className="group flex flex-col bg-dark-surface border border-dark-border rounded-xl overflow-hidden hover:border-neon-purple/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.15)] transition-all duration-200 text-left w-full"
+      className="group flex flex-col bg-dark-surface border border-dark-border rounded-xl overflow-hidden hover:border-inca-gold/60 hover:shadow-[0_0_20px_rgba(212,160,23,0.12)] transition-all duration-200 text-left w-full"
     >
       {/* Cover */}
       <div className="relative aspect-square w-full bg-dark-base overflow-hidden">
@@ -26,8 +26,12 @@ export function SongCard({ song, onClick }: SongCardProps) {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <Music className="w-10 h-10 text-gray-600" />
+          <div className="w-full h-full flex items-center justify-center bg-dark-base">
+            {/* Placeholder geométrico andino */}
+            <div className="relative flex items-center justify-center">
+              <div className="w-12 h-12 border-2 border-inca-gold/30 rotate-45 absolute" />
+              <Music className="w-8 h-8 text-inca-gold/40 relative z-10" />
+            </div>
           </div>
         )}
         <div className="absolute top-2 right-2">
@@ -37,9 +41,9 @@ export function SongCard({ song, onClick }: SongCardProps) {
 
       {/* Info */}
       <div className="p-3">
-        <p className="text-white text-sm font-semibold truncate">{song.title}</p>
-        <p className="text-gray-400 text-xs truncate mt-0.5">{song.artist}</p>
-        <p className="text-gray-600 text-xs mt-1">{formatDuration(song.duration)}</p>
+        <p className="text-warm-white text-sm font-semibold truncate font-serif">{song.title}</p>
+        <p className="text-sand-beige text-xs truncate mt-0.5">{song.artist}</p>
+        <p className="text-soil-brown text-xs mt-1">{formatDuration(song.duration)}</p>
       </div>
     </button>
   );

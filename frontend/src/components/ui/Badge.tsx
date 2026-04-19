@@ -5,27 +5,29 @@ import { QueueStatus } from '@/types/queue.types';
 type BadgeVariant = Language | QueueStatus | 'default';
 
 const variantStyles: Record<BadgeVariant, string> = {
-  SPANISH: 'bg-cyan-900/50 text-cyan-300 border border-cyan-700/50',
-  KICHWA: 'bg-purple-900/50 text-purple-300 border border-purple-700/50',
-  ACHUAR: 'bg-green-900/50 text-green-300 border border-green-700/50',
-  OTHER: 'bg-gray-800/50 text-gray-300 border border-gray-600/50',
-  PLAYING: 'bg-pink-900/50 text-pink-300 border border-pink-700/50 animate-pulse',
-  PENDING: 'bg-gray-800/50 text-gray-400 border border-gray-700/50',
-  PLAYED: 'bg-gray-900/50 text-gray-600 border border-gray-800/50',
-  CANCELLED: 'bg-red-900/50 text-red-400 border border-red-800/50',
-  default: 'bg-gray-800/50 text-gray-400 border border-gray-700/50',
+  // Idiomas — identidad cultural
+  SPANISH:   'bg-chakra-ocre/20 text-[#e8a855] border border-chakra-ocre/50',
+  KICHWA:    'bg-kichwa-rojo/20 text-[#e87070] border border-kichwa-rojo/50',
+  ACHUAR:    'bg-selva-verde/20 text-[#7abf96] border border-selva-verde/50',
+  OTHER:     'bg-gris-paramo/20 text-sand-beige border border-gris-paramo/40',
+  // Estados de la cola
+  PLAYING:   'bg-inca-gold/20 text-inca-gold border border-inca-gold/50 animate-pulse',
+  PENDING:   'bg-dark-border/60 text-soil-brown border border-dark-border',
+  PLAYED:    'bg-dark-base/60 text-soil-brown/60 border border-dark-border/50',
+  CANCELLED: 'bg-kichwa-rojo/10 text-kichwa-rojo border border-kichwa-rojo/30',
+  default:   'bg-dark-border/60 text-soil-brown border border-dark-border',
 };
 
 const labels: Record<BadgeVariant, string> = {
-  SPANISH: 'Español',
-  KICHWA: 'Kichwa',
-  ACHUAR: 'Achuar',
-  OTHER: 'Otro',
-  PLAYING: '▶ Reproduciendo',
-  PENDING: 'En cola',
-  PLAYED: 'Reproducida',
+  SPANISH:   'Español',
+  KICHWA:    'Kichwa',
+  ACHUAR:    'Achuar',
+  OTHER:     'Otro',
+  PLAYING:   '▶ Reproduciendo',
+  PENDING:   'En cola',
+  PLAYED:    'Reproducida',
   CANCELLED: 'Cancelada',
-  default: '',
+  default:   '',
 };
 
 interface BadgeProps {

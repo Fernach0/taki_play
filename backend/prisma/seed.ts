@@ -34,6 +34,27 @@ async function main() {
   }
   console.log('✅ 5 mesas creadas (números 1 al 5)');
 
+  // ─── Canciones — helper idempotente ──────────────────────
+  // Comprueba por título+idioma antes de crear para evitar duplicados
+  // sin necesidad de IDs fijos. Prisma genera UUID v4 automáticamente.
+  async function upsertSong(data: {
+    title: string;
+    artist: string;
+    genre: string;
+    language: 'SPANISH' | 'KICHWA' | 'ACHUAR' | 'OTHER';
+    duration: number;
+    demoUrl: string;
+    fullUrl: string;
+    coverUrl: string;
+  }) {
+    const existing = await prisma.song.findFirst({
+      where: { title: data.title, language: data.language },
+    });
+    if (!existing) {
+      await prisma.song.create({ data });
+    }
+  }
+
   // ─── Canciones en Español ────────────────────────────────
   const songsEspanol = [
     { title: 'La Bamba', artist: 'Ritchie Valens', genre: 'Rock', duration: 135 },
@@ -49,23 +70,15 @@ async function main() {
   ];
 
   for (const s of songsEspanol) {
-    await prisma.song.upsert({
-      where: { id: `seed-es-${s.title.replace(/\s/g, '-').toLowerCase()}` },
-      update: {},
-      create: {
-        id: `seed-es-${s.title.replace(/\s/g, '-').toLowerCase()}`,
-        title: s.title,
-        artist: s.artist,
-        genre: s.genre,
-        language: 'SPANISH',
-        duration: s.duration,
-        demoUrl: `http://localhost:3000/media/demos/${s.title.replace(/\s/g, '_').toLowerCase()}_demo.mp3`,
-        fullUrl: `http://localhost:3000/media/full/${s.title.replace(/\s/g, '_').toLowerCase()}.mp3`,
-        coverUrl: `http://localhost:3000/media/covers/${s.title.replace(/\s/g, '_').toLowerCase()}.jpg`,
-      },
+    await upsertSong({
+      ...s,
+      language: 'SPANISH',
+      demoUrl: `http://localhost:3000/media/demos/${s.title.replaceAll(' ', '_').toLowerCase()}_demo.mp3`,
+      fullUrl: `http://localhost:3000/media/full/${s.title.replaceAll(' ', '_').toLowerCase()}.mp3`,
+      coverUrl: `http://localhost:3000/media/covers/${s.title.replaceAll(' ', '_').toLowerCase()}.jpg`,
     });
   }
-  console.log(`✅ ${songsEspanol.length} canciones en Español creadas`);
+  console.log(`✅ ${songsEspanol.length} canciones en Español verificadas`);
 
   // ─── Canciones en Kichwa ─────────────────────────────────
   const songsKichwa = [
@@ -77,23 +90,15 @@ async function main() {
   ];
 
   for (const s of songsKichwa) {
-    await prisma.song.upsert({
-      where: { id: `seed-ki-${s.title.replace(/\s/g, '-').toLowerCase()}` },
-      update: {},
-      create: {
-        id: `seed-ki-${s.title.replace(/\s/g, '-').toLowerCase()}`,
-        title: s.title,
-        artist: s.artist,
-        genre: s.genre,
-        language: 'KICHWA',
-        duration: s.duration,
-        demoUrl: `http://localhost:3000/media/demos/${s.title.replace(/\s/g, '_').toLowerCase()}_demo.mp3`,
-        fullUrl: `http://localhost:3000/media/full/${s.title.replace(/\s/g, '_').toLowerCase()}.mp3`,
-        coverUrl: `http://localhost:3000/media/covers/${s.title.replace(/\s/g, '_').toLowerCase()}.jpg`,
-      },
+    await upsertSong({
+      ...s,
+      language: 'KICHWA',
+      demoUrl: `http://localhost:3000/media/demos/${s.title.replaceAll(' ', '_').toLowerCase()}_demo.mp3`,
+      fullUrl: `http://localhost:3000/media/full/${s.title.replaceAll(' ', '_').toLowerCase()}.mp3`,
+      coverUrl: `http://localhost:3000/media/covers/${s.title.replaceAll(' ', '_').toLowerCase()}.jpg`,
     });
   }
-  console.log(`✅ ${songsKichwa.length} canciones en Kichwa creadas`);
+  console.log(`✅ ${songsKichwa.length} canciones en Kichwa verificadas`);
 
   // ─── Canciones en Achuar ─────────────────────────────────
   const songsAchuar = [
@@ -103,23 +108,15 @@ async function main() {
   ];
 
   for (const s of songsAchuar) {
-    await prisma.song.upsert({
-      where: { id: `seed-ac-${s.title.replace(/\s/g, '-').toLowerCase()}` },
-      update: {},
-      create: {
-        id: `seed-ac-${s.title.replace(/\s/g, '-').toLowerCase()}`,
-        title: s.title,
-        artist: s.artist,
-        genre: s.genre,
-        language: 'ACHUAR',
-        duration: s.duration,
-        demoUrl: `http://localhost:3000/media/demos/${s.title.replace(/\s/g, '_').toLowerCase()}_demo.mp3`,
-        fullUrl: `http://localhost:3000/media/full/${s.title.replace(/\s/g, '_').toLowerCase()}.mp3`,
-        coverUrl: `http://localhost:3000/media/covers/${s.title.replace(/\s/g, '_').toLowerCase()}.jpg`,
-      },
+    await upsertSong({
+      ...s,
+      language: 'ACHUAR',
+      demoUrl: `http://localhost:3000/media/demos/${s.title.replaceAll(' ', '_').toLowerCase()}_demo.mp3`,
+      fullUrl: `http://localhost:3000/media/full/${s.title.replaceAll(' ', '_').toLowerCase()}.mp3`,
+      coverUrl: `http://localhost:3000/media/covers/${s.title.replaceAll(' ', '_').toLowerCase()}.jpg`,
     });
   }
-  console.log(`✅ ${songsAchuar.length} canciones en Achuar creadas`);
+  console.log(`✅ ${songsAchuar.length} canciones en Achuar verificadas`);
 
   console.log('\n🎉 Seed completado exitosamente!');
   console.log('─────────────────────────────────────────');

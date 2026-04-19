@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -24,20 +24,32 @@ export default function MesaPage() {
   const qrCode = params.qrCode as string;
   const qc = useQueryClient();
 
-  const { sessionId, tableId, tableNumber, isJoined, joinTable } = useSessionStore();
+  const { sessionId, tableId, tableNumber, joinTable } = useSessionStore();
   const [search, setSearch] = useState('');
   const [langFilter, setLangFilter] = useState<Language | 'ALL'>('ALL');
   const songModal = useModal<Song>();
 
-  // Unirse a la mesa si no hay sesión activa
+  // Estado local para saber si la sesión está garantizada desde esta carga de página.
+  // NO depende de Zustand isJoined (que puede tener datos rancios de sessionStorage).
+  const [sessionReady, setSessionReady] = useState(false);
+  const joiningRef = useRef(false);
+
   useEffect(() => {
-    if (!isJoined || !tableId) {
-      sessionsService
-        .joinTable(qrCode)
-        .then((session) => joinTable(session))
-        .catch(() => toast.error('QR inválido o mesa no disponible'));
-    }
-  }, [qrCode]);
+    // Evitar doble llamada por StrictMode o re-renders
+    if (joiningRef.current) return;
+    joiningRef.current = true;
+
+    sessionsService
+      .joinTable(qrCode)
+      .then((session) => {
+        joinTable(session);
+        setSessionReady(true);
+      })
+      .catch(() => {
+        toast.error('QR inválido o mesa no disponible');
+        joiningRef.current = false;
+      });
+  }, [qrCode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Canciones
   const { data: songs = [], isLoading } = useQuery({
@@ -53,21 +65,32 @@ export default function MesaPage() {
   // Cola en tiempo real
   const { items: queueItems, pendingCount } = useQueue(tableId);
 
-  // Pedir canción
+  // Pedir canción — tableId y sessionId garantizados por sessionReady
   const requestMutation = useMutation({
-    mutationFn: (song: Song) =>
-      queueService.addToQueue({
+    mutationFn: (song: Song) => {
+      // Capturamos los valores en el momento exacto de ejecución
+      const currentTableId = useSessionStore.getState().tableId;
+      const currentSessionId = useSessionStore.getState().sessionId;
+
+      if (!song?.id || !currentTableId || !currentSessionId) {
+        return Promise.reject(new Error('Sesión o canción inválida. Recarga la página.'));
+      }
+
+      return queueService.addToQueue({
         songId: song.id,
-        tableId: tableId!,
-        sessionId: sessionId!,
-      }),
+        tableId: currentTableId,
+        sessionId: currentSessionId,
+      });
+    },
     onSuccess: (_, song) => {
       qc.invalidateQueries({ queryKey: ['queue', tableId] });
-      toast.success(`"${song.title}" agregada a la cola 🎵`);
+      toast.success(`"${song.title}" agregada a la cola`);
       songModal.close();
     },
     onError: (err: any) => {
-      const msg = err?.response?.data?.message ?? 'Error al agregar la canción';
+      // Mostrar todos los errores de validación del backend o el mensaje directo
+      const raw = err?.response?.data?.message ?? err?.message ?? 'Error al agregar la canción';
+      const msg = Array.isArray(raw) ? raw.join(' · ') : raw;
       toast.error(msg);
     },
   });
@@ -78,25 +101,25 @@ export default function MesaPage() {
       <header className="sticky top-0 z-30 bg-dark-base/90 backdrop-blur-sm border-b border-dark-border px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-bold text-white">🎵 Taki Play</h1>
+            <h1 className="text-lg font-bold text-warm-white font-serif">Taki Play</h1>
             {tableNumber && (
-              <p className="text-xs text-neon-cyan">Mesa #{tableNumber}</p>
+              <p className="text-xs text-inca-gold">Mesa #{tableNumber}</p>
             )}
           </div>
-          <div className="text-xs text-gray-500">{pendingCount}/10 en cola</div>
+          <div className="text-xs text-soil-brown">{pendingCount}/10 en cola</div>
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-4 space-y-4">
         {/* Buscador */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-soil-brown" />
           <input
             type="text"
             placeholder="Buscar canciones o artistas..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 rounded-xl bg-dark-surface border border-dark-border text-white placeholder-gray-500 focus:outline-none focus:border-neon-purple transition-all text-sm"
+            className="w-full pl-10 pr-4 py-3 rounded-xl bg-dark-surface border border-dark-border text-warm-white placeholder-soil-brown focus:outline-none focus:border-inca-gold transition-all text-sm"
           />
         </div>
 
@@ -109,7 +132,7 @@ export default function MesaPage() {
             <Spinner size="lg" />
           </div>
         ) : songs.length === 0 ? (
-          <div className="text-center py-16 text-gray-500">
+          <div className="text-center py-16 text-soil-brown">
             <p>No se encontraron canciones</p>
           </div>
         ) : (
@@ -132,6 +155,7 @@ export default function MesaPage() {
         pendingCount={pendingCount}
         onRequest={requestMutation.mutate}
         isRequesting={requestMutation.isPending}
+        isSessionReady={sessionReady}
       />
     </div>
   );

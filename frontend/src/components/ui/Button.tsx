@@ -17,13 +17,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary:
-        'bg-neon-purple text-white hover:bg-purple-500 focus:ring-neon-purple shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_25px_rgba(168,85,247,0.6)]',
+        'bg-inca-gold text-dark-base hover:bg-[#e8b420] focus:ring-inca-gold shadow-[0_0_15px_rgba(212,160,23,0.4)] hover:shadow-[0_0_25px_rgba(212,160,23,0.6)]',
       secondary:
-        'border border-neon-cyan text-neon-cyan bg-transparent hover:bg-cyan-950/50 focus:ring-neon-cyan',
+        'border border-selva-verde text-selva-verde bg-transparent hover:bg-selva-verde/10 focus:ring-selva-verde',
       danger:
-        'bg-red-600 text-white hover:bg-red-500 focus:ring-red-500',
+        'bg-kichwa-rojo text-warm-white hover:bg-rojo-sangay focus:ring-kichwa-rojo',
       ghost:
-        'text-gray-400 hover:text-white hover:bg-white/10 focus:ring-gray-500',
+        'text-soil-brown hover:text-warm-white hover:bg-white/10 focus:ring-gris-paramo',
     };
 
     const sizes = {

@@ -1,23 +1,45 @@
 @import "tailwindcss";
 
-/* ─── Paleta neón Taki Play ─────────────────────────── */
+/* ─── Paleta Intercultural Taki Play ────────────────── */
 @theme {
-  --color-neon-purple: #a855f7;
-  --color-neon-cyan: #06b6d4;
-  --color-neon-pink: #ec4899;
-  --color-neon-green: #22c55e;
-  --color-dark-base: #0a0a0f;
-  --color-dark-surface: #14141f;
-  --color-dark-border: #2a2a3f;
+  /* Fondos — tierra y arcilla */
+  --color-dark-base:    #0d0a07;
+  --color-dark-surface: #1a1208;
+  --color-dark-border:  #2e1f0e;
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Acentos culturales */
+  --color-inca-gold:    #d4a017;
+  --color-selva-verde:  #4a7c59;
+  --color-kichwa-rojo:  #c0392b;
+  --color-chakra-ocre:  #b5651d;
+  --color-cielo-andino: #2980b9;
+
+  /* Estados funcionales */
+  --color-verde-kitu:   #27ae60;
+  --color-rojo-sangay:  #e74c3c;
+  --color-gris-paramo:  #5d6d7e;
+
+  /* Texto cálido */
+  --color-warm-white:   #f5f0e8;
+  --color-sand-beige:   #c4a882;
+  --color-soil-brown:   #7a6652;
+
+  /* Aliases heredados — compatibilidad con paneles que usan clases neon-* */
+  --color-neon-purple:  #d4a017;
+  --color-neon-cyan:    #4a7c59;
+  --color-neon-pink:    #c0392b;
+  --color-neon-green:   #27ae60;
+
+  /* Tipografías */
+  --font-sans:  var(--font-geist-sans);
+  --font-mono:  var(--font-geist-mono);
+  --font-serif: var(--font-playfair);
 }
 
 /* ─── Base ───────────────────────────────────────────── */
 body {
   background-color: var(--color-dark-base);
-  color: #fff;
+  color: var(--color-warm-white);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
@@ -25,13 +47,14 @@ body {
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--color-dark-base); }
 ::-webkit-scrollbar-thumb { background: var(--color-dark-border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-neon-purple); }
+::-webkit-scrollbar-thumb:hover { background: var(--color-inca-gold); }
 
-/* ─── Ocultar scrollbar (no-scrollbar) ──────────────── */
+/* ─── Ocultar scrollbar ─────────────────────────────── */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ─── Efecto neón en texto ──────────────────────────── */
-.neon-text {
-  text-shadow: 0 0 20px rgba(168, 85, 247, 0.8), 0 0 40px rgba(168, 85, 247, 0.4);
+/* ─── Efecto oro en texto ───────────────────────────── */
+.oro-text {
+  text-shadow: 0 0 20px rgba(212, 160, 23, 0.7), 0 0 40px rgba(212, 160, 23, 0.3);
 }
+.neon-text { text-shadow: 0 0 20px rgba(212, 160, 23, 0.7), 0 0 40px rgba(212, 160, 23, 0.3); }

@@ -15,6 +15,7 @@ interface SongDetailModalProps {
   pendingCount: number;
   onRequest: (song: Song) => void;
   isRequesting?: boolean;
+  isSessionReady?: boolean;
 }
 
 export function SongDetailModal({
@@ -24,6 +25,7 @@ export function SongDetailModal({
   pendingCount,
   onRequest,
   isRequesting,
+  isSessionReady = false,
 }: SongDetailModalProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const queueFull = pendingCount >= 10;
@@ -69,8 +71,15 @@ export function SongDetailModal({
         </audio>
       </div>
 
+      {/* Sesión no lista */}
+      {!isSessionReady && (
+        <p className="text-center text-sm text-amber-400 mb-4 bg-amber-900/20 rounded-lg p-3 border border-amber-700/30">
+          Conectando con la mesa... espera un momento.
+        </p>
+      )}
+
       {/* Cola llena warning */}
-      {queueFull && (
+      {queueFull && isSessionReady && (
         <p className="text-center text-sm text-amber-400 mb-4 bg-amber-900/20 rounded-lg p-3 border border-amber-700/30">
           La cola está llena (10/10). Espera a que se reproduzcan algunas canciones.
         </p>
@@ -83,7 +92,7 @@ export function SongDetailModal({
         <Button
           variant="primary"
           onClick={() => onRequest(song)}
-          disabled={queueFull}
+          disabled={queueFull || !isSessionReady}
           loading={isRequesting}
           className="flex-1"
         >
