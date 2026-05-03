@@ -22,8 +22,14 @@ async function bootstrap() {
     }),
   );
 
-  // CORS abierto para desarrollo local
-  app.enableCors();
+  app.enableCors({
+    origin: [
+      'http://localhost:3001',
+      'https://taki-play.vercel.app',
+      /\.vercel\.app$/,
+    ],
+    credentials: true,
+  });
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
