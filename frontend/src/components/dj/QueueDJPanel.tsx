@@ -1,6 +1,7 @@
 'use client';
 
-import { Play, Trash2, Music2, Clock, Users } from 'lucide-react';
+import { useRef, useEffect, useState } from 'react';
+import { Play, Trash2, Music2, Clock, Users, Music, CheckCircle, Volume2, VolumeX } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { queueService } from '@/services/queue.service';
@@ -17,6 +18,8 @@ function timeAgo(dateStr: string) {
 
 export function QueueDJPanel() {
   const qc = useQueryClient();
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [muted, setMuted] = useState(false);
 
   const { data: globalQueue = [], isLoading: loadingGlobal } = useQuery({
     queryKey: ['global-queue'],
@@ -40,6 +43,16 @@ export function QueueDJPanel() {
     onError: (err: any) => toast.error(err?.response?.data?.message ?? 'Error'),
   });
 
+  const finishMutation = useMutation({
+    mutationFn: (id: string) => queueService.updateItem(id, { status: 'PLAYED' }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['global-queue'] });
+      qc.invalidateQueries({ queryKey: ['all-queues'] });
+      toast.success('Canción marcada como terminada');
+    },
+    onError: (err: any) => toast.error(err?.response?.data?.message ?? 'Error'),
+  });
+
   const removeMutation = useMutation({
     mutationFn: (id: string) => queueService.removeItem(id),
     onSuccess: () => {
@@ -52,18 +65,55 @@ export function QueueDJPanel() {
   const nowPlaying = allQueues.filter((t) => t.currentlyPlaying !== null);
   const isLoading = loadingGlobal || loadingPlaying;
 
+  // Reproduce automáticamente la primera canción en estado PLAYING
+  const currentUrl = nowPlaying[0]?.currentlyPlaying?.song.fullUrl ?? null;
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (currentUrl) {
+      if (audio.src !== currentUrl) {
+        audio.src = currentUrl;
+        audio.load();
+      }
+      audio.play().catch(() => {});
+    } else {
+      audio.pause();
+      audio.src = '';
+    }
+  }, [currentUrl]);
+
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.muted = muted;
+  }, [muted]);
+
   if (isLoading) return <div className="flex justify-center py-16"><Spinner /></div>;
 
   return (
     <div className="space-y-8">
+      {/* Reproductor oculto */}
+      <audio ref={audioRef} />
 
       {/* ── En reproducción ── */}
       {nowPlaying.length > 0 && (
         <section>
-          <h2 className="text-sm font-semibold text-inca-gold uppercase tracking-widest mb-3 flex items-center gap-2">
-            <Music2 className="w-4 h-4 animate-pulse" />
-            En reproducción
-          </h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-inca-gold uppercase tracking-widest flex items-center gap-2">
+              <Music2 className="w-4 h-4 animate-pulse" />
+              En reproducción
+            </h2>
+            <button
+              onClick={() => setMuted((m) => !m)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
+                muted
+                  ? 'bg-kichwa-rojo/20 border-kichwa-rojo/40 text-kichwa-rojo'
+                  : 'bg-selva-verde/20 border-selva-verde/40 text-selva-verde'
+              }`}
+              title={muted ? 'Activar sonido' : 'Silenciar'}
+            >
+              {muted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+              {muted ? 'Silenciado' : 'Sonido activo'}
+            </button>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
             {nowPlaying.map((table) => (
               <div
@@ -82,6 +132,14 @@ export function QueueDJPanel() {
                 <span className="text-xs font-bold text-kichwa-rojo bg-kichwa-rojo/20 px-2 py-1 rounded-lg flex-shrink-0">
                   Mesa {table.tableNumber}
                 </span>
+                <button
+                  onClick={() => finishMutation.mutate(table.currentlyPlaying!.id)}
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg bg-selva-verde/20 border border-selva-verde/40 text-selva-verde text-xs font-semibold hover:bg-selva-verde/30 transition-colors flex-shrink-0"
+                  title="Marcar como terminada"
+                >
+                  <CheckCircle className="w-3.5 h-3.5" />
+                  Terminó
+                </button>
               </div>
             ))}
           </div>
@@ -116,6 +174,22 @@ export function QueueDJPanel() {
                 <span className="text-lg font-bold text-inca-gold/60 font-serif w-7 text-center flex-shrink-0">
                   {index + 1}
                 </span>
+
+                {/* Portada */}
+                <div className="w-10 h-10 rounded-lg bg-dark-base border border-dark-border flex-shrink-0 overflow-hidden">
+                  {item.song.coverUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={item.song.coverUrl}
+                      alt={item.song.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Music className="w-4 h-4 text-soil-brown" />
+                    </div>
+                  )}
+                </div>
 
                 {/* Info canción */}
                 <div className="flex-1 min-w-0">

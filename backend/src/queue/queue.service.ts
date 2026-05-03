@@ -51,6 +51,24 @@ export class QueueService {
       throw new NotFoundException('Sesión no válida para esta mesa');
     }
 
+    // Cooldown: mínimo 6 minutos entre pedidos por mesa
+    const COOLDOWN_MS = 6 * 60 * 1000;
+    const lastRequest = await this.prisma.queueItem.findFirst({
+      where: { tableId, status: { in: ['PENDING', 'PLAYING', 'PLAYED'] } },
+      orderBy: { createdAt: 'desc' },
+    });
+    if (lastRequest) {
+      const elapsed = Date.now() - new Date(lastRequest.createdAt).getTime();
+      if (elapsed < COOLDOWN_MS) {
+        const remaining = Math.ceil((COOLDOWN_MS - elapsed) / 1000);
+        const mins = Math.floor(remaining / 60);
+        const secs = remaining % 60;
+        throw new BadRequestException(
+          `Debes esperar ${mins}:${secs.toString().padStart(2, '0')} min antes de pedir otra canción.`,
+        );
+      }
+    }
+
     // Regla crítica: máximo 10 canciones pendientes por mesa
     const pendingCount = await this.prisma.queueItem.count({
       where: { tableId, status: 'PENDING' },
@@ -107,7 +125,9 @@ export class QueueService {
       tables.map(async (table) => {
         const playing = await this.prisma.queueItem.findFirst({
           where: { tableId: table.id, status: 'PLAYING' },
-          include: QUEUE_ITEM_INCLUDE,
+          include: {
+            song: { select: { id: true, title: true, artist: true, fullUrl: true } },
+          },
         });
         const pendingCount = await this.prisma.queueItem.count({
           where: { tableId: table.id, status: 'PENDING' },

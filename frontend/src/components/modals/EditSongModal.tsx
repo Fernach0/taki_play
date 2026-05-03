@@ -13,15 +13,12 @@ import { songsService } from '@/services/songs.service';
 import { Song } from '@/types/song.types';
 
 const schema = z.object({
-  title: z.string().min(1),
-  artist: z.string().min(1),
+  title: z.string().min(1, 'El título es requerido'),
+  artist: z.string().min(1, 'El artista es requerido'),
   album: z.string().optional(),
-  genre: z.string().min(1),
+  genre: z.string().min(1, 'El género es requerido'),
   language: z.enum(['SPANISH', 'KICHWA', 'ACHUAR', 'OTHER']),
-  duration: z.number().int().positive(),
-  demoUrl: z.string().url(),
-  fullUrl: z.string().url(),
-  coverUrl: z.string().url().optional().or(z.literal('')),
+  lyrics: z.string().optional(),
   isActive: z.boolean().optional(),
 });
 
@@ -40,7 +37,17 @@ export function EditSongModal({ isOpen, onClose, song }: EditSongModalProps) {
   });
 
   useEffect(() => {
-    if (song) reset({ ...song, coverUrl: song.coverUrl ?? '', album: song.album ?? '' });
+    if (song) {
+      reset({
+        title: song.title,
+        artist: song.artist,
+        album: song.album ?? '',
+        genre: song.genre,
+        language: song.language,
+        lyrics: song.lyrics ?? '',
+        isActive: song.isActive,
+      });
+    }
   }, [song, reset]);
 
   const mutation = useMutation({
@@ -57,7 +64,7 @@ export function EditSongModal({ isOpen, onClose, song }: EditSongModalProps) {
 
   return (
     <ModalWrapper isOpen={isOpen} onClose={onClose} title="Editar Canción" size="lg">
-      <form onSubmit={handleSubmit((d) => mutation.mutate(d as FormData))} className="space-y-4">
+      <form onSubmit={handleSubmit((d) => mutation.mutate(d))} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <Input label="Título *" error={errors.title?.message} {...register('title')} />
           <Input label="Artista *" error={errors.artist?.message} {...register('artist')} />
@@ -65,22 +72,33 @@ export function EditSongModal({ isOpen, onClose, song }: EditSongModalProps) {
           <Input label="Género *" error={errors.genre?.message} {...register('genre')} />
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-gray-300">Idioma *</label>
-            <select className="w-full px-4 py-2.5 rounded-lg text-sm text-white bg-dark-surface border border-dark-border focus:outline-none focus:border-neon-purple transition-all" {...register('language')}>
+            <select
+              className="w-full px-4 py-2.5 rounded-lg text-sm text-white bg-dark-surface border border-dark-border focus:outline-none focus:border-neon-purple transition-all"
+              {...register('language')}
+            >
               <option value="SPANISH">Español</option>
               <option value="KICHWA">Kichwa</option>
               <option value="ACHUAR">Achuar</option>
               <option value="OTHER">Otro</option>
             </select>
           </div>
-          <Input label="Duración (seg) *" type="number" error={errors.duration?.message} {...register('duration', { valueAsNumber: true })} />
         </div>
-        <Input label="URL Demo *" error={errors.demoUrl?.message} {...register('demoUrl')} />
-        <Input label="URL Completa *" error={errors.fullUrl?.message} {...register('fullUrl')} />
-        <Input label="URL Portada" error={errors.coverUrl?.message} {...register('coverUrl')} />
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-medium text-gray-300">Letra</label>
+          <textarea
+            rows={5}
+            placeholder="Escribe aquí la letra de la canción..."
+            className="w-full px-4 py-2.5 rounded-lg text-sm text-white bg-dark-surface border border-dark-border focus:outline-none focus:border-neon-purple transition-all resize-none font-serif"
+            {...register('lyrics')}
+          />
+        </div>
+
         <div className="flex items-center gap-2">
           <input type="checkbox" id="isActive" {...register('isActive')} className="w-4 h-4 accent-neon-purple" />
           <label htmlFor="isActive" className="text-sm text-gray-300">Activa</label>
         </div>
+
         <div className="flex gap-3 pt-2">
           <Button type="button" variant="ghost" onClick={onClose} className="flex-1">Cancelar</Button>
           <Button type="submit" variant="primary" loading={mutation.isPending} className="flex-1">Guardar cambios</Button>
