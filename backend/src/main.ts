@@ -22,14 +22,7 @@ async function bootstrap() {
     }),
   );
 
-  app.enableCors({
-    origin: [
-      'http://localhost:3001',
-      'https://taki-play.vercel.app',
-      /\.vercel\.app$/,
-    ],
-    credentials: true,
-  });
+  app.enableCors({ origin: '*' });
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
