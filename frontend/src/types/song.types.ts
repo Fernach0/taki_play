@@ -11,6 +11,7 @@ export interface Song {
   demoUrl: string;
   fullUrl?: string;
   coverUrl?: string | null;
+  lyrics?: string | null;
   isActive?: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -33,6 +34,7 @@ export interface CreateSongDto {
   demoUrl: string;
   fullUrl: string;
   coverUrl?: string;
+  lyrics?: string;
 }
 
 export interface UpdateSongDto extends Partial<CreateSongDto> {

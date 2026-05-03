@@ -48,6 +48,10 @@ export class UpdateSongDto {
   coverUrl?: string;
 
   @IsOptional()
+  @IsString()
+  lyrics?: string;
+
+  @IsOptional()
   @IsBoolean()
   isActive?: boolean;
 }

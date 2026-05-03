@@ -14,6 +14,7 @@ const PUBLIC_SONG_SELECT = {
   duration: true,
   demoUrl: true,
   coverUrl: true,
+  lyrics: true,
 };
 
 @Injectable()

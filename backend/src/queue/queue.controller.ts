@@ -36,6 +36,12 @@ export class QueueController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('global')
+  getGlobalQueue() {
+    return this.queueService.getGlobalQueue();
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   updateItem(
     @Param('id') id: string,

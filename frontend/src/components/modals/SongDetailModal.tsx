@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { Music, Clock, Play } from 'lucide-react';
+import { Music, Clock, Play, FileText } from 'lucide-react';
 import { ModalWrapper } from './ModalWrapper';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -70,6 +70,18 @@ export function SongDetailModal({
           Tu navegador no soporta audio HTML5.
         </audio>
       </div>
+
+      {/* Letra */}
+      {song.lyrics && (
+        <div className="bg-dark-base rounded-xl p-4 mb-6 border border-dark-border">
+          <p className="text-xs text-gray-500 mb-3 flex items-center gap-1">
+            <FileText className="w-3 h-3" /> Letra
+          </p>
+          <pre className="text-sm text-warm-white font-serif whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-dark-border">
+            {song.lyrics}
+          </pre>
+        </div>
+      )}
 
       {/* Sesión no lista */}
       {!isSessionReady && (

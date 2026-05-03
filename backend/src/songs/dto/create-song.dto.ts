@@ -44,4 +44,8 @@ export class CreateSongDto {
   @IsOptional()
   @IsUrl({}, { message: 'coverUrl debe ser una URL válida' })
   coverUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  lyrics?: string;
 }

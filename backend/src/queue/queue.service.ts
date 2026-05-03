@@ -125,6 +125,28 @@ export class QueueService {
     );
   }
 
+  async getGlobalQueue() {
+    const items = await this.prisma.queueItem.findMany({
+      where: { status: 'PENDING' },
+      orderBy: { createdAt: 'asc' },
+      include: {
+        ...QUEUE_ITEM_INCLUDE,
+        table: { select: { id: true, number: true } },
+      },
+    });
+
+    return items.map((item) => ({
+      id: item.id,
+      tableId: item.tableId,
+      tableNumber: item.table.number,
+      song: item.song,
+      requestedBy: item.requestedBy,
+      position: item.position,
+      createdAt: item.createdAt,
+      status: item.status,
+    }));
+  }
+
   async updateItem(id: string, updateQueueItemDto: UpdateQueueItemDto) {
     const item = await this.prisma.queueItem.findUnique({ where: { id } });
     if (!item) {

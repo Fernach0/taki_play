@@ -2,6 +2,7 @@ import { api } from '@/lib/api';
 import {
   TableQueue,
   AllQueuesItem,
+  GlobalQueueItem,
   QueueItem,
   AddToQueueDto,
   UpdateQueueItemDto,
@@ -20,6 +21,11 @@ export const queueService = {
 
   getAllQueues: async (): Promise<AllQueuesItem[]> => {
     const { data } = await api.get<AllQueuesItem[]>('/queue');
+    return data;
+  },
+
+  getGlobalQueue: async (): Promise<GlobalQueueItem[]> => {
+    const { data } = await api.get<GlobalQueueItem[]>('/queue/global');
     return data;
   },
 

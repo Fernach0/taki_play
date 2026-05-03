@@ -1,11 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Prefijo global
+  // Servir archivos estáticos desde /public (MP3, imágenes, etc.)
+  app.useStaticAssets(join(__dirname, '..', '..', 'public'));
+
+  // Prefijo global para la API
   app.setGlobalPrefix('api/v1');
 
   // Validación global de DTOs
@@ -24,6 +29,7 @@ async function bootstrap() {
   await app.listen(port);
 
   console.log(`\n🎵 Taki Play Backend corriendo en: http://localhost:${port}/api/v1`);
+  console.log(`📁 Archivos estáticos en:          http://localhost:${port}/media/`);
 }
 
 bootstrap();
