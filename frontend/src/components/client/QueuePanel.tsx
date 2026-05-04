@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Music2, ChevronUp, ChevronDown } from 'lucide-react';
 import { QueueItem } from '@/types/queue.types';
 import { Badge } from '@/components/ui/Badge';
+import { useT } from '@/hooks/useT';
 
 interface QueuePanelProps {
   items: QueueItem[];
@@ -12,6 +13,7 @@ interface QueuePanelProps {
 
 export function QueuePanel({ items, pendingCount }: QueuePanelProps) {
   const [expanded, setExpanded] = useState(false);
+  const t = useT();
 
   if (items.length === 0) return null;
 
@@ -29,7 +31,7 @@ export function QueuePanel({ items, pendingCount }: QueuePanelProps) {
           <div className="flex items-center gap-2">
             <Music2 className="w-4 h-4 text-inca-gold" />
             <span className="text-sm font-semibold text-warm-white">
-              En cola ({pendingCount})
+              {t.queueLabel} ({pendingCount})
             </span>
             {playing && <Badge variant="PLAYING" />}
           </div>
@@ -40,7 +42,6 @@ export function QueuePanel({ items, pendingCount }: QueuePanelProps) {
           )}
         </button>
 
-        {/* Lista — expandible en móvil, siempre visible en desktop */}
         <div className={`${expanded ? 'block' : 'hidden'} md:block px-4 pb-4 md:pt-4 max-h-64 overflow-y-auto space-y-2`}>
           {playing && (
             <div className="flex items-center gap-3 p-2 rounded-lg bg-inca-gold/10 border border-inca-gold/30">
@@ -65,7 +66,7 @@ export function QueuePanel({ items, pendingCount }: QueuePanelProps) {
                 <p className="text-soil-brown text-xs truncate">{item.song.artist}</p>
               </div>
               {item.requestedBy && (
-                <span className="text-xs text-soil-brown/70 flex-shrink-0">por {item.requestedBy}</span>
+                <span className="text-xs text-soil-brown/70 flex-shrink-0">{t.by} {item.requestedBy}</span>
               )}
             </div>
           ))}

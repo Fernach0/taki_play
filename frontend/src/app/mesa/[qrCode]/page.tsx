@@ -9,7 +9,9 @@ import { songsService } from '@/services/songs.service';
 import { sessionsService } from '@/services/sessions.service';
 import { queueService } from '@/services/queue.service';
 import { useSessionStore } from '@/store/sessionStore';
+import { useLanguageStore } from '@/store/languageStore';
 import { useQueue } from '@/hooks/useQueue';
+import { useT } from '@/hooks/useT';
 import { SongCard } from '@/components/client/SongCard';
 import { SongFilters } from '@/components/client/SongFilters';
 import { QueuePanel } from '@/components/client/QueuePanel';
@@ -17,7 +19,14 @@ import { SongDetailModal } from '@/components/modals/SongDetailModal';
 import { Spinner } from '@/components/ui/Spinner';
 import { Song } from '@/types/song.types';
 import { Language } from '@/types/song.types';
+import { UILang } from '@/lib/i18n';
 import { useModal } from '@/hooks/useModal';
+
+const LANGS: { id: UILang; icon: string; label: string }[] = [
+  { id: 'es', icon: '🇪🇸', label: 'ES' },
+  { id: 'ki', icon: '🪶', label: 'KI' },
+  { id: 'sh', icon: '🌿', label: 'SH' },
+];
 
 export default function MesaPage() {
   const params = useParams();
@@ -25,17 +34,16 @@ export default function MesaPage() {
   const qc = useQueryClient();
 
   const { sessionId, tableId, tableNumber, joinTable } = useSessionStore();
+  const { lang, setLang } = useLanguageStore();
+  const t = useT();
   const [search, setSearch] = useState('');
   const [langFilter, setLangFilter] = useState<Language | 'ALL'>('ALL');
   const songModal = useModal<Song>();
 
-  // Estado local para saber si la sesión está garantizada desde esta carga de página.
-  // NO depende de Zustand isJoined (que puede tener datos rancios de sessionStorage).
   const [sessionReady, setSessionReady] = useState(false);
   const joiningRef = useRef(false);
 
   useEffect(() => {
-    // Evitar doble llamada por StrictMode o re-renders
     if (joiningRef.current) return;
     joiningRef.current = true;
 
@@ -51,7 +59,6 @@ export default function MesaPage() {
       });
   }, [qrCode]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Canciones
   const { data: songs = [], isLoading } = useQuery({
     queryKey: ['songs', search, langFilter],
     queryFn: () =>
@@ -62,13 +69,10 @@ export default function MesaPage() {
     staleTime: 1000 * 60 * 5,
   });
 
-  // Cola en tiempo real
   const { items: queueItems, pendingCount } = useQueue(tableId);
 
-  // Pedir canción — tableId y sessionId garantizados por sessionReady
   const requestMutation = useMutation({
     mutationFn: (song: Song) => {
-      // Capturamos los valores en el momento exacto de ejecución
       const currentTableId = useSessionStore.getState().tableId;
       const currentSessionId = useSessionStore.getState().sessionId;
 
@@ -88,7 +92,6 @@ export default function MesaPage() {
       songModal.close();
     },
     onError: (err: any) => {
-      // Mostrar todos los errores de validación del backend o el mensaje directo
       const raw = err?.response?.data?.message ?? err?.message ?? 'Error al agregar la canción';
       const msg = Array.isArray(raw) ? raw.join(' · ') : raw;
       toast.error(msg);
@@ -106,7 +109,29 @@ export default function MesaPage() {
               <p className="text-xs text-inca-gold">Mesa #{tableNumber}</p>
             )}
           </div>
-          <div className="text-xs text-soil-brown">{pendingCount}/10 en cola</div>
+
+          <div className="flex items-center gap-3">
+            {/* Selector de idioma */}
+            <div className="flex items-center gap-1 bg-dark-surface border border-dark-border rounded-xl p-1">
+              {LANGS.map((l) => (
+                <button
+                  key={l.id}
+                  onClick={() => setLang(l.id)}
+                  className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${
+                    lang === l.id
+                      ? 'bg-inca-gold text-dark-base'
+                      : 'text-soil-brown hover:text-sand-beige'
+                  }`}
+                  title={l.label}
+                >
+                  <span>{l.icon}</span>
+                  <span>{l.label}</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="text-xs text-soil-brown">{pendingCount}/10</div>
+          </div>
         </div>
       </header>
 
@@ -116,14 +141,14 @@ export default function MesaPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-soil-brown" />
           <input
             type="text"
-            placeholder="Buscar canciones o artistas..."
+            placeholder={t.search}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-3 rounded-xl bg-dark-surface border border-dark-border text-warm-white placeholder-soil-brown focus:outline-none focus:border-inca-gold transition-all text-sm"
           />
         </div>
 
-        {/* Filtros de idioma */}
+        {/* Filtros de idioma de canción */}
         <SongFilters selected={langFilter} onChange={setLangFilter} />
 
         {/* Lista de canciones */}
@@ -133,7 +158,7 @@ export default function MesaPage() {
           </div>
         ) : songs.length === 0 ? (
           <div className="text-center py-16 text-soil-brown">
-            <p>No se encontraron canciones</p>
+            <p>{t.noSongs}</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">

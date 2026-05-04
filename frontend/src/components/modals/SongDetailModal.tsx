@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Song } from '@/types/song.types';
 import { formatDuration } from '@/lib/utils';
+import { useT } from '@/hooks/useT';
 
 interface SongDetailModalProps {
   isOpen: boolean;
@@ -28,12 +29,13 @@ export function SongDetailModal({
   isSessionReady = false,
 }: SongDetailModalProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const t = useT();
   const queueFull = pendingCount >= 10;
 
   if (!song) return null;
 
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose} title="Detalle de canción">
+    <ModalWrapper isOpen={isOpen} onClose={onClose} title={song.title}>
       <div className="flex gap-4 mb-6">
         {/* Cover */}
         <div className="w-24 h-24 rounded-xl bg-dark-base border border-dark-border flex-shrink-0 overflow-hidden">
@@ -64,7 +66,7 @@ export function SongDetailModal({
       {/* Demo player */}
       <div className="bg-dark-base rounded-xl p-4 mb-6 border border-dark-border">
         <p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
-          <Play className="w-3 h-3" /> Vista previa (demo)
+          <Play className="w-3 h-3" /> {t.preview}
         </p>
         <audio ref={audioRef} controls className="w-full h-10" src={song.demoUrl}>
           Tu navegador no soporta audio HTML5.
@@ -75,7 +77,7 @@ export function SongDetailModal({
       {song.lyrics && (
         <div className="bg-dark-base rounded-xl p-4 mb-6 border border-dark-border">
           <p className="text-xs text-gray-500 mb-3 flex items-center gap-1">
-            <FileText className="w-3 h-3" /> Letra
+            <FileText className="w-3 h-3" /> {t.lyrics}
           </p>
           <pre className="text-sm text-warm-white font-serif whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-dark-border">
             {song.lyrics}
@@ -86,20 +88,20 @@ export function SongDetailModal({
       {/* Sesión no lista */}
       {!isSessionReady && (
         <p className="text-center text-sm text-amber-400 mb-4 bg-amber-900/20 rounded-lg p-3 border border-amber-700/30">
-          Conectando con la mesa... espera un momento.
+          {t.connecting}
         </p>
       )}
 
-      {/* Cola llena warning */}
+      {/* Cola llena */}
       {queueFull && isSessionReady && (
         <p className="text-center text-sm text-amber-400 mb-4 bg-amber-900/20 rounded-lg p-3 border border-amber-700/30">
-          La cola está llena (10/10). Espera a que se reproduzcan algunas canciones.
+          {t.queueFull}
         </p>
       )}
 
       <div className="flex gap-3">
         <Button variant="ghost" onClick={onClose} className="flex-1">
-          Cerrar
+          {t.close}
         </Button>
         <Button
           variant="primary"
@@ -108,7 +110,7 @@ export function SongDetailModal({
           loading={isRequesting}
           className="flex-1"
         >
-          Pedir esta canción
+          {t.requestSong}
         </Button>
       </div>
     </ModalWrapper>
