@@ -22,6 +22,7 @@ export interface SongFilters {
   language?: Language;
   genre?: string;
   artist?: string;
+  includeInactive?: boolean;
 }
 
 export interface CreateSongDto {

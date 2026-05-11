@@ -23,11 +23,11 @@ export class SongsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(filters: FilterSongsDto) {
-    const { search, language, genre, artist } = filters;
+    const { search, language, genre, artist, includeInactive } = filters;
 
     return this.prisma.song.findMany({
       where: {
-        isActive: true,
+        ...(includeInactive ? {} : { isActive: true }),
         AND: [
           search
             ? {

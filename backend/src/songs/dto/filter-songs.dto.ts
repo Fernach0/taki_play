@@ -1,4 +1,5 @@
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsEnum, IsOptional, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { Language } from '@prisma/client';
 
 export class FilterSongsDto {
@@ -17,4 +18,9 @@ export class FilterSongsDto {
   @IsOptional()
   @IsString()
   artist?: string;
+
+  @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
+  @IsBoolean()
+  includeInactive?: boolean;
 }

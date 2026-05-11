@@ -26,7 +26,7 @@ export function SongsPanel() {
 
   const { data: songs = [], isLoading } = useQuery({
     queryKey: ['songs', search],
-    queryFn: () => songsService.getSongs({ search: search || undefined }),
+    queryFn: () => songsService.getSongs({ search: search || undefined, includeInactive: true }),
   });
 
   const deleteMutation = useMutation({
