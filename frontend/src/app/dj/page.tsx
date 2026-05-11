@@ -24,7 +24,7 @@ export default function DJDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-dark-base text-warm-white">
+    <div className="min-h-screen text-warm-white">
       <DJHeader />
 
       <div className="bg-dark-surface/50 border-b border-dark-border sticky top-[65px] z-20">

@@ -30,7 +30,7 @@ const ITEMS = Array.from({ length: COLS * ROWS }, (_, i) => {
 
 export function AndeanBackground() {
   return (
-    <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none select-none">
+    <div className="fixed inset-0 z-[0] overflow-hidden pointer-events-none select-none">
       {ITEMS.map((item, i) => (
         // eslint-disable-next-line @next/next/no-img-element
         <img

@@ -17,7 +17,7 @@ export default function HomePage() {
   const t = useT();
 
   return (
-    <div className="min-h-screen bg-dark-base flex flex-col items-center justify-center p-6 text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-inca-gold/4 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 left-1/4 w-[300px] h-[300px] bg-selva-verde/3 rounded-full blur-3xl" />

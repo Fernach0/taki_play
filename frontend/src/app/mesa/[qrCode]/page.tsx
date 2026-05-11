@@ -99,7 +99,7 @@ export default function MesaPage() {
   });
 
   return (
-    <div className="min-h-screen bg-dark-base text-white pb-24 md:pb-0">
+    <div className="min-h-screen text-white pb-24 md:pb-0">
       {/* Header */}
       <header className="sticky top-0 z-30 bg-dark-base/90 backdrop-blur-sm border-b border-dark-border px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
