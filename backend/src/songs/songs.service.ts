@@ -83,6 +83,14 @@ export class SongsService {
     return { message: 'Canción desactivada exitosamente', id };
   }
 
+  async updateCoverUrl(id: string, coverUrl: string | null) {
+    await this.findOneForAdmin(id);
+    return this.prisma.song.update({
+      where: { id },
+      data: { coverUrl },
+    });
+  }
+
   async findOneForAdmin(id: string) {
     const song = await this.prisma.song.findUnique({ where: { id } });
     if (!song) {

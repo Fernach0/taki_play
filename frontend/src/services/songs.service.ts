@@ -26,4 +26,18 @@ export const songsService = {
     const { data } = await api.delete(`/songs/${id}`);
     return data;
   },
+
+  uploadCover: async (id: string, file: File): Promise<Song> => {
+    const formData = new FormData();
+    formData.append('cover', file);
+    const { data } = await api.post<Song>(`/songs/${id}/cover`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data;
+  },
+
+  removeCover: async (id: string): Promise<Song> => {
+    const { data } = await api.patch<Song>(`/songs/${id}`, { coverUrl: null });
+    return data;
+  },
 };
