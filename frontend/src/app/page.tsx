@@ -1,17 +1,48 @@
+'use client';
+
 import { QrCode } from 'lucide-react';
 import Link from 'next/link';
+import { useLanguageStore } from '@/store/languageStore';
+import { useT } from '@/hooks/useT';
+import { UILang } from '@/lib/i18n';
+
+const LANGS: { id: UILang; icon: string; label: string }[] = [
+  { id: 'es', icon: '🇪🇸', label: 'ES' },
+  { id: 'ki', icon: '🪶', label: 'KI' },
+  { id: 'sh', icon: '🌿', label: 'SH' },
+];
 
 export default function HomePage() {
+  const { lang, setLang } = useLanguageStore();
+  const t = useT();
+
   return (
     <div className="min-h-screen bg-dark-base flex flex-col items-center justify-center p-6 text-center">
-      {/* Fondo decorativo — resplandor dorado cálido */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-inca-gold/4 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 left-1/4 w-[300px] h-[300px] bg-selva-verde/3 rounded-full blur-3xl" />
       </div>
 
+      {/* Selector de idioma — esquina superior derecha */}
+      <div className="absolute top-4 right-4 flex items-center gap-1 bg-dark-surface border border-dark-border rounded-xl p-1">
+        {LANGS.map((l) => (
+          <button
+            key={l.id}
+            onClick={() => setLang(l.id)}
+            className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${
+              lang === l.id
+                ? 'bg-inca-gold text-dark-base'
+                : 'text-soil-brown hover:text-sand-beige'
+            }`}
+          >
+            <span>{l.icon}</span>
+            <span>{l.label}</span>
+          </button>
+        ))}
+      </div>
+
       <div className="relative space-y-8 max-w-sm">
-        {/* Logo — símbolo solar */}
+        {/* Logo */}
         <div className="flex flex-col items-center gap-4">
           <div className="relative w-20 h-20 flex items-center justify-center">
             <div className="absolute inset-0 rounded-2xl bg-inca-gold/15 border border-inca-gold/40 shadow-[0_0_40px_rgba(212,160,23,0.25)]" />
@@ -30,10 +61,10 @@ export default function HomePage() {
           <div>
             <h1 className="text-4xl font-bold text-warm-white font-serif oro-text">Taki Play</h1>
             <p className="text-inca-gold text-sm mt-1 tracking-widest uppercase">
-              Karaoke Intercultural
+              {t.homeSubtitle}
             </p>
             <p className="text-soil-brown text-xs mt-2 italic">
-              Kichwa · Achuar · Español
+              {t.homeLangs}
             </p>
           </div>
         </div>
@@ -45,23 +76,18 @@ export default function HomePage() {
               <QrCode className="w-8 h-8 text-inca-gold" />
             </div>
           </div>
-          <p className="text-warm-white font-semibold text-lg font-serif">Escanea el QR de tu mesa</p>
-          <p className="text-sand-beige text-sm leading-relaxed">
-            Busca el código QR en tu mesa, escanéalo con la cámara de tu teléfono
-            y empieza a pedir canciones.
-          </p>
+          <p className="text-warm-white font-semibold text-lg font-serif">{t.homeQrTitle}</p>
+          <p className="text-sand-beige text-sm leading-relaxed">{t.homeQrDesc}</p>
           <div className="pt-2 border-t border-dark-border">
-            <p className="text-soil-brown text-xs">
-              Música de los pueblos indígenas del Ecuador
-            </p>
+            <p className="text-soil-brown text-xs">{t.homeFooter}</p>
           </div>
         </div>
 
         {/* Link al DJ */}
         <p className="text-soil-brown text-xs">
-          ¿Eres el DJ?{' '}
+          {t.homeIsDJ}{' '}
           <Link href="/dj/login" className="text-inca-gold hover:text-[#e8b420] transition-colors">
-            Accede al panel
+            {t.homeDJLink}
           </Link>
         </p>
       </div>

@@ -19,6 +19,14 @@ export const translations = {
     lyrics: 'Letra',
     by: 'por',
     langName: 'Idioma',
+    // ── Home ──
+    homeSubtitle: 'Karaoke Intercultural',
+    homeLangs: 'Kichwa · Achuar · Español',
+    homeQrTitle: 'Escanea el QR de tu mesa',
+    homeQrDesc: 'Busca el código QR en tu mesa, escanéalo con la cámara de tu teléfono y empieza a pedir canciones.',
+    homeFooter: 'Música de los pueblos indígenas del Ecuador',
+    homeIsDJ: '¿Eres el DJ?',
+    homeDJLink: 'Accede al panel',
     // ── DJ Login ──
     djSubtitle: 'Panel del DJ',
     djLoginTitle: 'Iniciar sesión',
@@ -66,6 +74,14 @@ export const translations = {
   },
 
   ki: {
+    // ── Home ──
+    homeSubtitle: 'Tukuy Takikuna',
+    homeLangs: 'Kichwa · Achuar · Español',
+    homeQrTitle: 'Misap QR-ta rikuy',
+    homeQrDesc: 'Misapi QR shimita maskarikuy, kamerata apiy, shinami takikunata mañanki.',
+    homeFooter: 'Ecuador runakuna takikuna',
+    homeIsDJ: '¿DJ kanki?',
+    homeDJLink: 'Panelpi yaykuy',
     // ── Cliente ──
     search: 'Maskay takikunata...',
     filterAll: 'Tukuy',
@@ -130,6 +146,14 @@ export const translations = {
   },
 
   sh: {
+    // ── Home ──
+    homeSubtitle: 'Atsakar Nankamamu',
+    homeLangs: 'Kichwa · Achuar · Shuar',
+    homeQrTitle: '📷 Mesanmaya QR aneamu',
+    homeQrDesc: 'Mesanmaya QR anemamu, kamera apiramu, shinami nankamkamu juaramu.',
+    homeFooter: 'Ecuador aentsu nankamamu',
+    homeIsDJ: '¿DJ ainia au?',
+    homeDJLink: 'Akankamunu juaramu',
     // ── Cliente ──
     search: '🔍 Anemamu...',
     filterAll: 'Atsakar',
