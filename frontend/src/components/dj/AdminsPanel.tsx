@@ -7,9 +7,11 @@ import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
 import { CreateAdminModal } from '@/components/modals/CreateAdminModal';
 import { useModal } from '@/hooks/useModal';
+import { useT } from '@/hooks/useT';
 
 export function AdminsPanel() {
   const createModal = useModal();
+  const t = useT();
 
   const { data: admins = [], isLoading } = useQuery({
     queryKey: ['admins'],
@@ -21,9 +23,9 @@ export function AdminsPanel() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-bold text-white">Administradores ({admins.length})</h2>
+        <h2 className="text-lg font-bold text-white">{t.adminsTitle} ({admins.length})</h2>
         <Button variant="primary" size="sm" onClick={() => createModal.open()}>
-          <Plus className="w-4 h-4" /> Crear Admin
+          <Plus className="w-4 h-4" /> {t.createAdmin}
         </Button>
       </div>
 

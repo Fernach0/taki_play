@@ -5,16 +5,17 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { tablesService } from '@/services/tables.service';
 import { Button } from '@/components/ui/Button';
-import { Badge } from '@/components/ui/Badge';
 import { Spinner } from '@/components/ui/Spinner';
 import { AddTableModal } from '@/components/modals/AddTableModal';
 import { EditTableModal } from '@/components/modals/EditTableModal';
 import { ConfirmDeleteModal } from '@/components/modals/ConfirmDeleteModal';
 import { useModal } from '@/hooks/useModal';
+import { useT } from '@/hooks/useT';
 import { Table } from '@/types/table.types';
 
 export function TablesPanel() {
   const qc = useQueryClient();
+  const t = useT();
   const addModal = useModal();
   const editModal = useModal<Table>();
   const deleteModal = useModal<Table>();
@@ -36,7 +37,7 @@ export function TablesPanel() {
 
   const copyQr = (qrCode: string) => {
     navigator.clipboard.writeText(qrCode);
-    toast.success('QR copiado al portapapeles');
+    toast.success(t.qrCopied);
   };
 
   if (isLoading) return <div className="flex justify-center py-16"><Spinner /></div>;
@@ -44,9 +45,9 @@ export function TablesPanel() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-bold text-white">Mesas ({tables.length})</h2>
+        <h2 className="text-lg font-bold text-white">{t.tablesTitle} ({tables.length})</h2>
         <Button variant="primary" size="sm" onClick={() => addModal.open()}>
-          <Plus className="w-4 h-4" /> Nueva Mesa
+          <Plus className="w-4 h-4" /> {t.newTable}
         </Button>
       </div>
 
@@ -54,11 +55,11 @@ export function TablesPanel() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-dark-border bg-dark-base/50">
-              <th className="text-left px-4 py-3 text-gray-400 font-medium">Mesa</th>
-              <th className="text-left px-4 py-3 text-gray-400 font-medium">Estado</th>
-              <th className="text-left px-4 py-3 text-gray-400 font-medium">QR Code</th>
-              <th className="text-left px-4 py-3 text-gray-400 font-medium">En cola</th>
-              <th className="text-right px-4 py-3 text-gray-400 font-medium">Acciones</th>
+              <th className="text-left px-4 py-3 text-gray-400 font-medium">{t.colTable}</th>
+              <th className="text-left px-4 py-3 text-gray-400 font-medium">{t.colStatus}</th>
+              <th className="text-left px-4 py-3 text-gray-400 font-medium">{t.colQrCode}</th>
+              <th className="text-left px-4 py-3 text-gray-400 font-medium">{t.colQueue}</th>
+              <th className="text-right px-4 py-3 text-gray-400 font-medium">{t.colActions}</th>
             </tr>
           </thead>
           <tbody>
@@ -67,7 +68,7 @@ export function TablesPanel() {
                 <td className="px-4 py-3 text-white font-semibold">#{table.number}</td>
                 <td className="px-4 py-3">
                   <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${table.isActive ? 'bg-green-900/50 text-green-300' : 'bg-gray-800 text-gray-500'}`}>
-                    {table.isActive ? 'Activa' : 'Inactiva'}
+                    {table.isActive ? t.statusActive : t.statusInactive}
                   </span>
                 </td>
                 <td className="px-4 py-3">

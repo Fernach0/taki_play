@@ -3,15 +3,25 @@
 import { LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguageStore } from '@/store/languageStore';
+import { useT } from '@/hooks/useT';
+import { UILang } from '@/lib/i18n';
+
+const LANGS: { id: UILang; icon: string; label: string }[] = [
+  { id: 'es', icon: '🇪🇸', label: 'ES' },
+  { id: 'ki', icon: '🪶', label: 'KI' },
+  { id: 'sh', icon: '🌿', label: 'SH' },
+];
 
 export function DJHeader() {
   const { admin, logout } = useAuth();
+  const { lang, setLang } = useLanguageStore();
+  const t = useT();
 
   return (
     <header className="bg-dark-surface/90 backdrop-blur-sm border-b border-inca-gold/20 px-6 py-4 sticky top-0 z-30">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center gap-3">
-          {/* Símbolo solar estilizado */}
           <div className="w-9 h-9 rounded-lg bg-inca-gold/15 border border-inca-gold/40 flex items-center justify-center shadow-[0_0_12px_rgba(212,160,23,0.2)]">
             <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5 text-inca-gold" stroke="currentColor" strokeWidth="1.5">
               <circle cx="12" cy="12" r="4" />
@@ -27,19 +37,35 @@ export function DJHeader() {
           </div>
           <div>
             <h1 className="text-sm font-bold text-warm-white font-serif">Taki Play</h1>
-            <p className="text-xs text-inca-gold">Panel del DJ</p>
+            <p className="text-xs text-inca-gold">{t.djPanelLabel}</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          {/* Selector de idioma */}
+          <div className="flex items-center gap-1 bg-dark-base border border-dark-border rounded-xl p-1">
+            {LANGS.map((l) => (
+              <button
+                key={l.id}
+                onClick={() => setLang(l.id)}
+                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold transition-all ${
+                  lang === l.id
+                    ? 'bg-inca-gold text-dark-base'
+                    : 'text-soil-brown hover:text-sand-beige'
+                }`}
+              >
+                <span>{l.icon}</span>
+                <span>{l.label}</span>
+              </button>
+            ))}
+          </div>
+
           {admin && (
-            <span className="text-sm text-sand-beige hidden sm:block">
-              {admin.name}
-            </span>
+            <span className="text-sm text-sand-beige hidden sm:block">{admin.name}</span>
           )}
           <Button variant="ghost" size="sm" onClick={logout} className="gap-1">
             <LogOut className="w-4 h-4" />
-            Salir
+            {t.djLogout}
           </Button>
         </div>
       </div>

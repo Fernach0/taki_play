@@ -2,6 +2,7 @@ export type UILang = 'es' | 'ki' | 'sh';
 
 export const translations = {
   es: {
+    // ── Cliente ──
     search: 'Buscar canciones o artistas...',
     filterAll: 'Todos',
     filterSpanish: 'Español',
@@ -18,8 +19,54 @@ export const translations = {
     lyrics: 'Letra',
     by: 'por',
     langName: 'Idioma',
+    // ── DJ Login ──
+    djSubtitle: 'Panel del DJ',
+    djLoginTitle: 'Iniciar sesión',
+    djEmail: 'Email',
+    djPassword: 'Contraseña',
+    djLoginBtn: 'Ingresar al panel',
+    // ── DJ Header ──
+    djPanelLabel: 'Panel del DJ',
+    djLogout: 'Salir',
+    // ── DJ Tabs ──
+    tabQueue: 'Cola en Vivo',
+    tabSongs: 'Canciones',
+    tabTables: 'Mesas',
+    tabAdmins: 'Admins',
+    // ── DJ Panel Cola ──
+    nowPlaying: 'En reproducción',
+    queueRequests: 'Cola de pedidos',
+    markDone: 'Terminó',
+    soundActive: 'Sonido activo',
+    soundMuted: 'Silenciado',
+    noQueue: 'No hay canciones en cola',
+    tableLabel: 'Mesa',
+    // ── DJ Panel Canciones ──
+    songsTitle: 'Canciones',
+    djSearch: 'Buscar...',
+    newSong: 'Nueva Canción',
+    colSong: 'Canción',
+    colLanguage: 'Idioma',
+    colGenre: 'Género',
+    colDuration: 'Duración',
+    colStatus: 'Estado',
+    colActions: 'Acciones',
+    statusActive: 'Activa',
+    statusInactive: 'Inactiva',
+    // ── DJ Panel Mesas ──
+    tablesTitle: 'Mesas',
+    newTable: 'Nueva Mesa',
+    colTable: 'Mesa',
+    colQrCode: 'QR Code',
+    colQueue: 'En cola',
+    qrCopied: 'QR copiado al portapapeles',
+    // ── DJ Panel Admins ──
+    adminsTitle: 'Administradores',
+    createAdmin: 'Crear Admin',
   },
+
   ki: {
+    // ── Cliente ──
     search: 'Maskay takikunata...',
     filterAll: 'Tukuy',
     filterSpanish: 'Español',
@@ -36,8 +83,54 @@ export const translations = {
     lyrics: 'Shimikuna',
     by: 'mañashka',
     langName: 'Rimay',
+    // ── DJ Login ──
+    djSubtitle: 'DJ Kamachikpak',
+    djLoginTitle: 'Yaykuy',
+    djEmail: 'Elektronik karta',
+    djPassword: 'Pachasapa rimay',
+    djLoginBtn: 'Kamachik panelpi yaykuy',
+    // ── DJ Header ──
+    djPanelLabel: 'DJ Kamachikpak',
+    djLogout: 'Llukshiy',
+    // ── DJ Tabs ──
+    tabQueue: 'Kawsay Suyakuy',
+    tabSongs: 'Takikuna',
+    tabTables: 'Misas',
+    tabAdmins: 'Kamachikkuna',
+    // ── DJ Panel Cola ──
+    nowPlaying: 'Takikushkanchik',
+    queueRequests: 'Mañashka takikuna',
+    markDone: 'Tukurirka',
+    soundActive: '🔊 Uyarishka',
+    soundMuted: '🔇 Ama uyarishka',
+    noQueue: 'Mana takikunachu tiyan',
+    tableLabel: 'Misa',
+    // ── DJ Panel Canciones ──
+    songsTitle: 'Takikuna',
+    djSearch: 'Maskay...',
+    newSong: 'Musuq Taki',
+    colSong: 'Taki',
+    colLanguage: 'Rimay',
+    colGenre: 'Taki rikuy',
+    colDuration: 'Unay',
+    colStatus: 'Kay rikuriy',
+    colActions: 'Ruranakuna',
+    statusActive: 'Kawsak',
+    statusInactive: 'Mana kawsak',
+    // ── DJ Panel Mesas ──
+    tablesTitle: 'Misas',
+    newTable: 'Musuq Misa',
+    colTable: 'Misa',
+    colQrCode: 'QR Shimikuna',
+    colQueue: 'Suyakuypi',
+    qrCopied: 'QR hapishkanchik',
+    // ── DJ Panel Admins ──
+    adminsTitle: 'Kamachikkuna',
+    createAdmin: 'Musuq Kamachik',
   },
+
   sh: {
+    // ── Cliente ──
     search: '🔍 Anemamu...',
     filterAll: 'Atsakar',
     filterSpanish: 'Español',
@@ -54,5 +147,49 @@ export const translations = {
     lyrics: 'Chichamuri',
     by: 'aents',
     langName: 'Chicham',
+    // ── DJ Login ──
+    djSubtitle: 'DJ Akankamu',
+    djLoginTitle: '↗ Juaramu',
+    djEmail: 'Imiamu chicham',
+    djPassword: 'Pujutsamu chicham',
+    djLoginBtn: '↗ Akankamunu juaramu',
+    // ── DJ Header ──
+    djPanelLabel: 'DJ Akankamu',
+    djLogout: '↩ Emtikramu',
+    // ── DJ Tabs ──
+    tabQueue: '▶ Emkatin Nankam',
+    tabSongs: 'Nankamkamu',
+    tabTables: 'Mesankamu',
+    tabAdmins: 'Akankamu',
+    // ── DJ Panel Cola ──
+    nowPlaying: '▶ Nankamtai',
+    queueRequests: 'Emkatin anemamu',
+    markDone: '✓ Tukuramu',
+    soundActive: '🔊 Najanamu',
+    soundMuted: '🔇 Mash najanamu',
+    noQueue: '♪ Mash emkamtsuk',
+    tableLabel: 'Mesa',
+    // ── DJ Panel Canciones ──
+    songsTitle: 'Nankamkamu',
+    djSearch: '🔍 Anemamu...',
+    newSong: '+ Yaunchu Nankam',
+    colSong: 'Nankam',
+    colLanguage: 'Chicham',
+    colGenre: 'Nankam entsamu',
+    colDuration: '⏱ Unuimiatamu',
+    colStatus: 'Entsamu',
+    colActions: 'Najanatai',
+    statusActive: '✓ Najanatai',
+    statusInactive: '✗ Mash',
+    // ── DJ Panel Mesas ──
+    tablesTitle: 'Mesankamu',
+    newTable: '+ Yaunchu Mesa',
+    colTable: 'Mesa',
+    colQrCode: 'QR Chicham',
+    colQueue: 'Emkatin',
+    qrCopied: 'QR hapiramu',
+    // ── DJ Panel Admins ──
+    adminsTitle: 'Akankamu',
+    createAdmin: '+ Yaunchu Akankar',
   },
 } as const;

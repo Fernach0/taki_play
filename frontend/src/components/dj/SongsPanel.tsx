@@ -12,12 +12,14 @@ import { AddSongModal } from '@/components/modals/AddSongModal';
 import { EditSongModal } from '@/components/modals/EditSongModal';
 import { ConfirmDeleteModal } from '@/components/modals/ConfirmDeleteModal';
 import { useModal } from '@/hooks/useModal';
+import { useT } from '@/hooks/useT';
 import { Song } from '@/types/song.types';
 import { formatDuration } from '@/lib/utils';
 
 export function SongsPanel() {
   const qc = useQueryClient();
   const [search, setSearch] = useState('');
+  const t = useT();
   const addModal = useModal();
   const editModal = useModal<Song>();
   const deleteModal = useModal<Song>();
@@ -42,20 +44,20 @@ export function SongsPanel() {
   return (
     <div>
       <div className="flex items-center justify-between mb-4 gap-4 flex-wrap">
-        <h2 className="text-lg font-bold text-white">Canciones ({songs.length})</h2>
+        <h2 className="text-lg font-bold text-white">{t.songsTitle} ({songs.length})</h2>
         <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500" />
             <input
               type="text"
-              placeholder="Buscar..."
+              placeholder={t.djSearch}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-9 pr-4 py-2 rounded-lg bg-dark-surface border border-dark-border text-sm text-white placeholder-gray-500 focus:outline-none focus:border-neon-purple transition-all"
             />
           </div>
           <Button variant="primary" size="sm" onClick={() => addModal.open()}>
-            <Plus className="w-4 h-4" /> Nueva Canción
+            <Plus className="w-4 h-4" /> {t.newSong}
           </Button>
         </div>
       </div>
@@ -64,12 +66,12 @@ export function SongsPanel() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-dark-border bg-dark-base/50">
-              <th className="text-left px-4 py-3 text-gray-400 font-medium">Canción</th>
-              <th className="text-left px-4 py-3 text-gray-400 font-medium">Idioma</th>
-              <th className="text-left px-4 py-3 text-gray-400 font-medium">Género</th>
-              <th className="text-left px-4 py-3 text-gray-400 font-medium">Duración</th>
-              <th className="text-left px-4 py-3 text-gray-400 font-medium">Estado</th>
-              <th className="text-right px-4 py-3 text-gray-400 font-medium">Acciones</th>
+              <th className="text-left px-4 py-3 text-gray-400 font-medium">{t.colSong}</th>
+              <th className="text-left px-4 py-3 text-gray-400 font-medium">{t.colLanguage}</th>
+              <th className="text-left px-4 py-3 text-gray-400 font-medium">{t.colGenre}</th>
+              <th className="text-left px-4 py-3 text-gray-400 font-medium">{t.colDuration}</th>
+              <th className="text-left px-4 py-3 text-gray-400 font-medium">{t.colStatus}</th>
+              <th className="text-right px-4 py-3 text-gray-400 font-medium">{t.colActions}</th>
             </tr>
           </thead>
           <tbody>
@@ -84,7 +86,7 @@ export function SongsPanel() {
                 <td className="px-4 py-3 text-gray-400 font-mono">{formatDuration(song.duration)}</td>
                 <td className="px-4 py-3">
                   <span className={`text-xs px-2 py-0.5 rounded-full ${song.isActive ? 'bg-green-900/50 text-green-300' : 'bg-gray-800 text-gray-500'}`}>
-                    {song.isActive ? 'Activa' : 'Inactiva'}
+                    {song.isActive ? t.statusActive : t.statusInactive}
                   </span>
                 </td>
                 <td className="px-4 py-3">
