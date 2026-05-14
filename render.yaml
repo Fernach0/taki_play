@@ -1,10 +1,9 @@
 services:
   - type: web
     name: taki-play-backend
-    runtime: node
-    rootDir: backend
-    buildCommand: npm install && npm run build && npx prisma generate
-    startCommand: npm run start:prod
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
     envVars:
       - key: DATABASE_URL
         sync: false
