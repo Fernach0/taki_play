@@ -15,4 +15,4 @@ RUN ./node_modules/.bin/tsc -p tsconfig.build.json
 
 EXPOSE 3000
 
-CMD ["node", "dist/main"]
+CMD ["node", "dist/main.js"]
