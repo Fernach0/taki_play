@@ -1,0 +1,102 @@
+import { PrismaService } from '../prisma/prisma.service';
+import { CreateSongDto } from './dto/create-song.dto';
+import { UpdateSongDto } from './dto/update-song.dto';
+import { FilterSongsDto } from './dto/filter-songs.dto';
+export declare class SongsService {
+    private readonly prisma;
+    constructor(prisma: PrismaService);
+    findAll(filters: FilterSongsDto): Promise<{
+        id: string;
+        isActive: boolean;
+        title: string;
+        artist: string;
+        album: string;
+        genre: string;
+        language: import(".prisma/client").$Enums.Language;
+        duration: number;
+        demoUrl: string;
+        coverUrl: string;
+        lyrics: string;
+    }[]>;
+    findOne(id: string): Promise<{
+        id: string;
+        isActive: boolean;
+        title: string;
+        artist: string;
+        album: string;
+        genre: string;
+        language: import(".prisma/client").$Enums.Language;
+        duration: number;
+        demoUrl: string;
+        coverUrl: string;
+        lyrics: string;
+    }>;
+    create(createSongDto: CreateSongDto): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        isActive: boolean;
+        title: string;
+        artist: string;
+        album: string | null;
+        genre: string;
+        language: import(".prisma/client").$Enums.Language;
+        duration: number;
+        demoUrl: string;
+        fullUrl: string;
+        coverUrl: string | null;
+        lyrics: string | null;
+    }>;
+    update(id: string, updateSongDto: UpdateSongDto): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        isActive: boolean;
+        title: string;
+        artist: string;
+        album: string | null;
+        genre: string;
+        language: import(".prisma/client").$Enums.Language;
+        duration: number;
+        demoUrl: string;
+        fullUrl: string;
+        coverUrl: string | null;
+        lyrics: string | null;
+    }>;
+    remove(id: string): Promise<{
+        message: string;
+        id: string;
+    }>;
+    updateCoverUrl(id: string, coverUrl: string | null): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        isActive: boolean;
+        title: string;
+        artist: string;
+        album: string | null;
+        genre: string;
+        language: import(".prisma/client").$Enums.Language;
+        duration: number;
+        demoUrl: string;
+        fullUrl: string;
+        coverUrl: string | null;
+        lyrics: string | null;
+    }>;
+    findOneForAdmin(id: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        isActive: boolean;
+        title: string;
+        artist: string;
+        album: string | null;
+        genre: string;
+        language: import(".prisma/client").$Enums.Language;
+        duration: number;
+        demoUrl: string;
+        fullUrl: string;
+        coverUrl: string | null;
+        lyrics: string | null;
+    }>;
+}
