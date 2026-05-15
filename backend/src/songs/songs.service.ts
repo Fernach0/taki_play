@@ -116,7 +116,7 @@ export class SongsService {
   }
 
   async findOneForAdmin(id: string) {
-    const song = await this.prisma.song.findUnique({ where: { id } });
+    const song = await this.prisma.song.findUnique({ where: { id }, select: { id: true } });
     if (!song) throw new NotFoundException('Canción no encontrada');
     return song;
   }
