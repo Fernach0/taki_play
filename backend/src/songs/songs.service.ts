@@ -13,7 +13,6 @@ const PUBLIC_SONG_SELECT = {
   language: true,
   duration: true,
   demoUrl: true,
-  coverUrl: true,
   lyrics: true,
   isActive: true,
 };
@@ -53,10 +52,7 @@ export class SongsService {
       select: PUBLIC_SONG_SELECT,
     });
 
-    if (!song) {
-      throw new NotFoundException('Canción no encontrada');
-    }
-
+    if (!song) throw new NotFoundException('Canción no encontrada');
     return song;
   }
 
@@ -66,29 +62,21 @@ export class SongsService {
 
   async update(id: string, updateSongDto: UpdateSongDto) {
     await this.findOneForAdmin(id);
-
-    return this.prisma.song.update({
-      where: { id },
-      data: updateSongDto,
-    });
+    return this.prisma.song.update({ where: { id }, data: updateSongDto });
   }
 
   async remove(id: string) {
     await this.findOneForAdmin(id);
-
-    await this.prisma.song.update({
-      where: { id },
-      data: { isActive: false },
-    });
-
+    await this.prisma.song.update({ where: { id }, data: { isActive: false } });
     return { message: 'Canción desactivada exitosamente', id };
   }
 
-  async updateCoverUrl(id: string, coverUrl: string | null) {
+  async removeCoverImage(id: string) {
     await this.findOneForAdmin(id);
     return this.prisma.song.update({
       where: { id },
-      data: { coverUrl },
+      data: { coverImage: null, coverMimeType: null },
+      select: PUBLIC_SONG_SELECT,
     });
   }
 
@@ -96,12 +84,8 @@ export class SongsService {
     await this.findOneForAdmin(id);
     return this.prisma.song.update({
       where: { id },
-      data: {
-        coverImage: buffer,
-        coverMimeType: mimeType,
-        coverUrl: `/api/v1/songs/${id}/cover`,
-      },
-      select: { ...PUBLIC_SONG_SELECT },
+      data: { coverImage: buffer, coverMimeType: mimeType },
+      select: PUBLIC_SONG_SELECT,
     });
   }
 
@@ -116,9 +100,7 @@ export class SongsService {
 
   async findOneForAdmin(id: string) {
     const song = await this.prisma.song.findUnique({ where: { id } });
-    if (!song) {
-      throw new NotFoundException('Canción no encontrada');
-    }
+    if (!song) throw new NotFoundException('Canción no encontrada');
     return song;
   }
 }

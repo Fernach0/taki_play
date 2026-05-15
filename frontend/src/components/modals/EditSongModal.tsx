@@ -6,12 +6,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { ImagePlus, Trash2, Music } from 'lucide-react';
+import { ImagePlus, Trash2 } from 'lucide-react';
 import { ModalWrapper } from './ModalWrapper';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { songsService } from '@/services/songs.service';
 import { Song } from '@/types/song.types';
+import { SongCover } from '@/components/ui/SongCover';
 
 const schema = z.object({
   title: z.string().min(1, 'El título es requerido'),
@@ -112,7 +113,7 @@ export function EditSongModal({ isOpen, onClose, song }: EditSongModalProps) {
 
   if (!song) return null;
 
-  const displayedCover = previewUrl ?? song.coverUrl ?? null;
+  const displayedCover = previewUrl;
   const isRemoving = coverAction === 'remove';
 
   return (
@@ -125,13 +126,11 @@ export function EditSongModal({ isOpen, onClose, song }: EditSongModalProps) {
           <div className="w-24 h-24 rounded-xl border border-dark-border flex-shrink-0 overflow-hidden bg-dark-surface flex items-center justify-center">
             {displayedCover && !isRemoving ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={displayedCover}
-                alt="Portada"
-                className="w-full h-full object-cover"
-              />
+              <img src={displayedCover} alt="Portada" className="w-full h-full object-cover" />
+            ) : !isRemoving ? (
+              <SongCover songId={song.id} title={song.title} iconClassName="w-8 h-8 opacity-50" />
             ) : (
-              <Music className="w-8 h-8 text-soil-brown opacity-50" />
+              <SongCover songId="__none__" title="" iconClassName="w-8 h-8 opacity-50" />
             )}
           </div>
 

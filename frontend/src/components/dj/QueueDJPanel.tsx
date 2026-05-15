@@ -1,7 +1,8 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
-import { Play, Trash2, Music2, Clock, Users, Music, CheckCircle, Volume2, VolumeX } from 'lucide-react';
+import { Play, Trash2, Music2, Clock, Users, CheckCircle, Volume2, VolumeX } from 'lucide-react';
+import { SongCover } from '@/components/ui/SongCover';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { queueService } from '@/services/queue.service';
@@ -173,14 +174,7 @@ export function QueueDJPanel() {
                 </span>
 
                 <div className="w-10 h-10 rounded-lg bg-dark-base border border-dark-border flex-shrink-0 overflow-hidden">
-                  {item.song.coverUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={item.song.coverUrl} alt={item.song.title} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Music className="w-4 h-4 text-soil-brown" />
-                    </div>
-                  )}
+                  <SongCover songId={item.song.id} title={item.song.title} iconClassName="w-4 h-4" />
                 </div>
 
                 <div className="flex-1 min-w-0">

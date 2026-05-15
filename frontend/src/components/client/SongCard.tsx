@@ -1,8 +1,8 @@
 'use client';
 
-import { Music } from 'lucide-react';
 import { Song } from '@/types/song.types';
 import { Badge } from '@/components/ui/Badge';
+import { SongCover } from '@/components/ui/SongCover';
 import { formatDuration } from '@/lib/utils';
 
 interface SongCardProps {
@@ -18,22 +18,12 @@ export function SongCard({ song, onClick }: SongCardProps) {
     >
       {/* Cover */}
       <div className="relative aspect-square w-full bg-dark-base overflow-hidden">
-        {song.coverUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={song.coverUrl}
-            alt={song.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-dark-base">
-            {/* Placeholder geométrico andino */}
-            <div className="relative flex items-center justify-center">
-              <div className="w-12 h-12 border-2 border-inca-gold/30 rotate-45 absolute" />
-              <Music className="w-8 h-8 text-inca-gold/40 relative z-10" />
-            </div>
-          </div>
-        )}
+        <SongCover
+          songId={song.id}
+          title={song.title}
+          className="w-full h-full group-hover:scale-105 transition-transform duration-300"
+          iconClassName="w-8 h-8"
+        />
         <div className="absolute top-2 right-2">
           <Badge variant={song.language} />
         </div>

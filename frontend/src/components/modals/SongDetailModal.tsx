@@ -1,11 +1,12 @@
 'use client';
 
 import { useRef } from 'react';
-import { Music, Clock, Play, FileText } from 'lucide-react';
+import { Clock, Play, FileText } from 'lucide-react';
 import { ModalWrapper } from './ModalWrapper';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Song } from '@/types/song.types';
+import { SongCover } from '@/components/ui/SongCover';
 import { formatDuration } from '@/lib/utils';
 import { useT } from '@/hooks/useT';
 
@@ -39,14 +40,7 @@ export function SongDetailModal({
       <div className="flex gap-4 mb-6">
         {/* Cover */}
         <div className="w-24 h-24 rounded-xl bg-dark-base border border-dark-border flex-shrink-0 overflow-hidden">
-          {song.coverUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={song.coverUrl} alt={song.title} className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <Music className="w-8 h-8 text-gray-600" />
-            </div>
-          )}
+          <SongCover songId={song.id} title={song.title} />
         </div>
         {/* Info */}
         <div className="flex-1 min-w-0">

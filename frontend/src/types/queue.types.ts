@@ -6,7 +6,7 @@ export interface QueueItem {
   id: string;
   tableId: string;
   songId: string;
-  song: Pick<Song, 'id' | 'title' | 'artist' | 'genre' | 'language' | 'coverUrl'>;
+  song: Pick<Song, 'id' | 'title' | 'artist' | 'genre' | 'language'>;
   requestedBy?: string | null;
   status: QueueStatus;
   position: number;
@@ -35,7 +35,7 @@ export interface GlobalQueueItem {
   id: string;
   tableId: string;
   tableNumber: number;
-  song: Pick<Song, 'id' | 'title' | 'artist' | 'genre' | 'language' | 'coverUrl'>;
+  song: Pick<Song, 'id' | 'title' | 'artist' | 'genre' | 'language'>;
   requestedBy: string | null;
   position: number;
   createdAt: string;

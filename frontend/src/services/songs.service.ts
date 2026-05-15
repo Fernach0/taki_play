@@ -37,7 +37,7 @@ export const songsService = {
   },
 
   removeCover: async (id: string): Promise<Song> => {
-    const { data } = await api.patch<Song>(`/songs/${id}`, { coverUrl: null });
+    const { data } = await api.delete<Song>(`/songs/${id}/cover`);
     return data;
   },
 };

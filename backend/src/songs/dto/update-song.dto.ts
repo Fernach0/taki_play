@@ -44,10 +44,6 @@ export class UpdateSongDto {
   fullUrl?: string;
 
   @IsOptional()
-  @IsUrl()
-  coverUrl?: string;
-
-  @IsOptional()
   @IsString()
   lyrics?: string;
 

@@ -10,7 +10,6 @@ export interface Song {
   duration: number;
   demoUrl: string;
   fullUrl?: string;
-  coverUrl?: string | null;
   lyrics?: string | null;
   isActive?: boolean;
   createdAt?: string;
@@ -34,7 +33,6 @@ export interface CreateSongDto {
   duration: number;
   demoUrl: string;
   fullUrl: string;
-  coverUrl?: string;
   lyrics?: string;
 }
 

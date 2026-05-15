@@ -65,6 +65,12 @@ export class SongsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Delete(':id/cover')
+  async removeCover(@Param('id') id: string) {
+    return this.songsService.removeCoverImage(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post(':id/cover')
   @UseInterceptors(
     FileInterceptor('cover', {

@@ -19,7 +19,6 @@ const schema = z.object({
   duration: z.number().int().positive(),
   demoUrl: z.string().url('Debe ser una URL válida'),
   fullUrl: z.string().url('Debe ser una URL válida'),
-  coverUrl: z.string().url('Debe ser una URL válida').optional().or(z.literal('')),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -71,7 +70,7 @@ export function AddSongModal({ isOpen, onClose }: AddSongModalProps) {
         </div>
         <Input label="URL Demo (15-30 seg) *" error={errors.demoUrl?.message} {...register('demoUrl')} />
         <Input label="URL Completa *" error={errors.fullUrl?.message} {...register('fullUrl')} />
-        <Input label="URL Portada" error={errors.coverUrl?.message} {...register('coverUrl')} />
+        <p className="text-xs text-soil-brown">La imagen de portada se puede agregar después desde "Editar canción".</p>
 
         <div className="flex gap-3 pt-2">
           <Button type="button" variant="ghost" onClick={onClose} className="flex-1">Cancelar</Button>
