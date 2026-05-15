@@ -31,12 +31,12 @@ export function SongsPanel() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => songsService.deleteSong(id),
-    onSuccess: () => {
+    onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: ['songs'] });
-      toast.success('Canción desactivada');
+      toast.success(data.deleted ? 'Canción eliminada permanentemente' : 'Canción desactivada');
       deleteModal.close();
     },
-    onError: () => toast.error('Error al desactivar la canción'),
+    onError: () => toast.error('Error al procesar la canción'),
   });
 
   if (isLoading) return <div className="flex justify-center py-16"><Spinner /></div>;
@@ -113,6 +113,7 @@ export function SongsPanel() {
         onConfirm={() => deleteModal.selected && deleteMutation.mutate(deleteModal.selected.id)}
         entityName={deleteModal.selected?.title ?? ''}
         isLoading={deleteMutation.isPending}
+        isDangerous={deleteModal.selected?.isActive === false}
       />
     </div>
   );

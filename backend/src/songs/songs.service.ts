@@ -56,9 +56,15 @@ export class SongsService {
   }
 
   async remove(id: string) {
-    await this.findOneForAdmin(id);
-    await this.prisma.song.update({ where: { id }, data: { isActive: false } });
-    return { message: 'Canción desactivada exitosamente', id };
+    const song = await this.findOneForAdmin(id);
+
+    if (song.isActive) {
+      await this.prisma.song.update({ where: { id }, data: { isActive: false } });
+      return { message: 'Canción desactivada', id, deleted: false };
+    } else {
+      await this.prisma.song.delete({ where: { id } });
+      return { message: 'Canción eliminada permanentemente', id, deleted: true };
+    }
   }
 
   async updateCoverImage(id: string, buffer: Buffer, mimeType: string) {
@@ -116,7 +122,7 @@ export class SongsService {
   }
 
   async findOneForAdmin(id: string) {
-    const song = await this.prisma.song.findUnique({ where: { id }, select: { id: true } });
+    const song = await this.prisma.song.findUnique({ where: { id }, select: { id: true, isActive: true } });
     if (!song) throw new NotFoundException('Canción no encontrada');
     return song;
   }

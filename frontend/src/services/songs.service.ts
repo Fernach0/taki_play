@@ -22,7 +22,7 @@ export const songsService = {
     return data;
   },
 
-  deleteSong: async (id: string): Promise<{ message: string; id: string }> => {
+  deleteSong: async (id: string): Promise<{ message: string; id: string; deleted: boolean }> => {
     const { data } = await api.delete(`/songs/${id}`);
     return data;
   },
