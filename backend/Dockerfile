@@ -41,4 +41,4 @@ RUN ls -R dist
 EXPOSE 3000
 
 # Arrancar la aplicación
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/src/main.js"]
