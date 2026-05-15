@@ -5,30 +5,34 @@ import { join } from 'path';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  console.log('Iniciando el servidor NestJS...');
 
-  // Servir archivos estáticos desde /public (MP3, imágenes, etc.)
-  app.useStaticAssets(join(__dirname, '..', '..', 'public'));
+  try {
+    const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Prefijo global para la API
-  app.setGlobalPrefix('api/v1');
+    app.useStaticAssets(join(__dirname, '..', 'public'));
 
-  // Validación global de DTOs
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }),
-  );
+    app.setGlobalPrefix('api/v1');
 
-  app.enableCors({ origin: '*' });
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
+    );
 
-  const port = process.env.PORT ?? 3000;
-  await app.listen(port);
+    app.enableCors({ origin: '*' });
 
-  console.log(`\n🎵 Taki Play Backend corriendo en: http://localhost:${port}/api/v1`);
-  console.log(`📁 Archivos estáticos en:          http://localhost:${port}/media/`);
+    const port = process.env.PORT || 3000;
+    await app.listen(port, '0.0.0.0');
+
+    console.log(`Servidor corriendo en puerto ${port} (0.0.0.0)`);
+    console.log(`API disponible en: http://0.0.0.0:${port}/api/v1`);
+  } catch (error) {
+    console.error('Error fatal al arrancar la aplicación:', error);
+    process.exit(1);
+  }
 }
 
 bootstrap();
