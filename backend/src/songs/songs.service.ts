@@ -62,6 +62,7 @@ export class SongsService {
       await this.prisma.song.update({ where: { id }, data: { isActive: false } });
       return { message: 'Canción desactivada', id, deleted: false };
     } else {
+      await this.prisma.queueItem.deleteMany({ where: { songId: id } });
       await this.prisma.song.delete({ where: { id } });
       return { message: 'Canción eliminada permanentemente', id, deleted: true };
     }
