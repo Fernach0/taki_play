@@ -66,7 +66,6 @@ export class TablesService {
                 title: true,
                 artist: true,
                 language: true,
-                coverUrl: true,
               },
             },
           },

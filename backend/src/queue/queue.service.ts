@@ -16,7 +16,6 @@ const QUEUE_ITEM_INCLUDE = {
       artist: true,
       genre: true,
       language: true,
-      coverUrl: true,
     },
   },
 };
