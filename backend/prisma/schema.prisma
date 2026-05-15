@@ -74,8 +74,10 @@ model Song {
   duration   Int
   demoUrl    String
   fullUrl    String
-  coverUrl   String?
-  lyrics     String?
+  coverUrl      String?
+  coverImage    Bytes?
+  coverMimeType String?
+  lyrics        String?
   isActive   Boolean     @default(true)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt

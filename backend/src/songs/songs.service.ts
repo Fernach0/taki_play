@@ -92,6 +92,28 @@ export class SongsService {
     });
   }
 
+  async updateCoverImage(id: string, buffer: Buffer, mimeType: string) {
+    await this.findOneForAdmin(id);
+    return this.prisma.song.update({
+      where: { id },
+      data: {
+        coverImage: buffer,
+        coverMimeType: mimeType,
+        coverUrl: `/api/v1/songs/${id}/cover`,
+      },
+      select: { ...PUBLIC_SONG_SELECT },
+    });
+  }
+
+  async findCoverImage(id: string) {
+    const song = await this.prisma.song.findUnique({
+      where: { id },
+      select: { coverImage: true, coverMimeType: true },
+    });
+    if (!song) throw new NotFoundException('Canción no encontrada');
+    return song;
+  }
+
   async findOneForAdmin(id: string) {
     const song = await this.prisma.song.findUnique({ where: { id } });
     if (!song) {

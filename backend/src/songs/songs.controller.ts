@@ -7,17 +7,16 @@ import {
   Body,
   Param,
   Query,
+  Res,
   UseGuards,
   UseInterceptors,
   UploadedFile,
-  Req,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'node:path';
-import { mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { memoryStorage } from 'multer';
 import { SongsService } from './songs.service';
 import { CreateSongDto } from './dto/create-song.dto';
 import { UpdateSongDto } from './dto/update-song.dto';
@@ -28,7 +27,6 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 export class SongsController {
   constructor(private readonly songsService: SongsService) {}
 
-  // Rutas públicas (sin JWT)
   @Get()
   findAll(@Query() filters: FilterSongsDto) {
     return this.songsService.findAll(filters);
@@ -39,7 +37,15 @@ export class SongsController {
     return this.songsService.findOne(id);
   }
 
-  // Rutas protegidas (DJ)
+  @Get(':id/cover')
+  async getCover(@Param('id') id: string, @Res() res: Response) {
+    const song = await this.songsService.findCoverImage(id);
+    if (!song.coverImage) throw new NotFoundException('Esta canción no tiene imagen');
+    res.setHeader('Content-Type', song.coverMimeType ?? 'image/jpeg');
+    res.setHeader('Cache-Control', 'public, max-age=31536000');
+    res.send(song.coverImage);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createSongDto: CreateSongDto) {
@@ -62,17 +68,7 @@ export class SongsController {
   @Post(':id/cover')
   @UseInterceptors(
     FileInterceptor('cover', {
-      storage: diskStorage({
-        destination: (_req, _file, cb) => {
-          const dest = join(process.cwd(), 'public', 'covers');
-          mkdirSync(dest, { recursive: true });
-          cb(null, dest);
-        },
-        filename: (req, file, cb) => {
-          const ext = extname(file.originalname);
-          cb(null, `${req.params.id}${ext}`);
-        },
-      }),
+      storage: memoryStorage(),
       fileFilter: (_req, file, cb) => {
         if (!file.mimetype.match(/image\/(jpg|jpeg|png|gif|webp)/)) {
           return cb(new BadRequestException('Solo se permiten imágenes (jpg, png, gif, webp)'), false);
@@ -82,15 +78,8 @@ export class SongsController {
       limits: { fileSize: 5 * 1024 * 1024 },
     }),
   )
-  uploadCover(
-    @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
-    @Req() req: any,
-  ) {
+  async uploadCover(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
     if (!file) throw new BadRequestException('No se recibió ningún archivo');
-    const host = req.get('host');
-    const protocol = req.headers['x-forwarded-proto'] ?? req.protocol;
-    const coverUrl = `${protocol}://${host}/covers/${file.filename}`;
-    return this.songsService.updateCoverUrl(id, coverUrl);
+    return this.songsService.updateCoverImage(id, file.buffer, file.mimetype);
   }
 }
