@@ -3,6 +3,8 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+RUN apk add --no-cache openssl
+
 # Copiar dependencias y Prisma
 COPY package*.json ./
 COPY prisma ./prisma/
@@ -21,6 +23,8 @@ RUN npm run build
 FROM node:18-alpine
 
 WORKDIR /app
+
+RUN apk add --no-cache openssl
 
 # Copiar package.json
 COPY package*.json ./
