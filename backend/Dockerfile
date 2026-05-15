@@ -11,7 +11,7 @@ RUN npx prisma generate
 
 COPY . .
 
-RUN ./node_modules/.bin/tsc -p tsconfig.build.json
+RUN npm run build && ls dist/main.js
 
 EXPOSE 3000
 
