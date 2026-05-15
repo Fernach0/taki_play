@@ -125,7 +125,7 @@ export class QueueService {
         const playing = await this.prisma.queueItem.findFirst({
           where: { tableId: table.id, status: 'PLAYING' },
           include: {
-            song: { select: { id: true, title: true, artist: true, fullUrl: true } },
+            song: { select: { id: true, title: true, artist: true } },
           },
         });
         const pendingCount = await this.prisma.queueItem.count({

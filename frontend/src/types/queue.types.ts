@@ -27,7 +27,7 @@ export interface AllQueuesItem {
   pendingCount: number;
   currentlyPlaying: {
     id: string;
-    song: Pick<Song, 'id' | 'title' | 'artist' | 'fullUrl'>;
+    song: Pick<Song, 'id' | 'title' | 'artist'>;
   } | null;
 }
 

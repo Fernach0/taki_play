@@ -5,7 +5,6 @@ import {
   IsOptional,
   IsPositive,
   IsString,
-  IsUrl,
 } from 'class-validator';
 import { Language } from '@prisma/client';
 
@@ -34,14 +33,6 @@ export class UpdateSongDto {
   @IsInt()
   @IsPositive()
   duration?: number;
-
-  @IsOptional()
-  @IsUrl()
-  demoUrl?: string;
-
-  @IsOptional()
-  @IsUrl()
-  fullUrl?: string;
 
   @IsOptional()
   @IsString()

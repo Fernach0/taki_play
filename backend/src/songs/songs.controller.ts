@@ -23,6 +23,20 @@ import { UpdateSongDto } from './dto/update-song.dto';
 import { FilterSongsDto } from './dto/filter-songs.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
+const audioFilter = (_req: any, file: Express.Multer.File, cb: any) => {
+  if (!file.mimetype.match(/audio\/(mpeg|mp3|wav|ogg|mp4|aac)/)) {
+    return cb(new BadRequestException('Solo se permiten archivos de audio (mp3, wav, ogg)'), false);
+  }
+  cb(null, true);
+};
+
+const imageFilter = (_req: any, file: Express.Multer.File, cb: any) => {
+  if (!file.mimetype.match(/image\/(jpg|jpeg|png|gif|webp)/)) {
+    return cb(new BadRequestException('Solo se permiten imágenes (jpg, png, gif, webp)'), false);
+  }
+  cb(null, true);
+};
+
 @Controller('songs')
 export class SongsController {
   constructor(private readonly songsService: SongsService) {}
@@ -37,6 +51,8 @@ export class SongsController {
     return this.songsService.findOne(id);
   }
 
+  // ── Servir archivos binarios ──────────────────────────
+
   @Get(':id/cover')
   async getCover(@Param('id') id: string, @Res() res: Response) {
     const song = await this.songsService.findCoverImage(id);
@@ -45,6 +61,26 @@ export class SongsController {
     res.setHeader('Cache-Control', 'public, max-age=31536000');
     res.send(song.coverImage);
   }
+
+  @Get(':id/demo')
+  async getDemo(@Param('id') id: string, @Res() res: Response) {
+    const song = await this.songsService.findAudio(id, 'demo');
+    if (!('demoAudio' in song) || !song.demoAudio) throw new NotFoundException('Esta canción no tiene demo');
+    res.setHeader('Content-Type', (song as any).demoMimeType ?? 'audio/mpeg');
+    res.setHeader('Cache-Control', 'public, max-age=31536000');
+    res.send((song as any).demoAudio);
+  }
+
+  @Get(':id/full')
+  async getFull(@Param('id') id: string, @Res() res: Response) {
+    const song = await this.songsService.findAudio(id, 'full');
+    if (!('fullAudio' in song) || !song.fullAudio) throw new NotFoundException('Esta canción no tiene audio completo');
+    res.setHeader('Content-Type', (song as any).fullMimeType ?? 'audio/mpeg');
+    res.setHeader('Cache-Control', 'public, max-age=31536000');
+    res.send((song as any).fullAudio);
+  }
+
+  // ── Mutaciones protegidas ─────────────────────────────
 
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -72,20 +108,25 @@ export class SongsController {
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/cover')
-  @UseInterceptors(
-    FileInterceptor('cover', {
-      storage: memoryStorage(),
-      fileFilter: (_req, file, cb) => {
-        if (!file.mimetype.match(/image\/(jpg|jpeg|png|gif|webp)/)) {
-          return cb(new BadRequestException('Solo se permiten imágenes (jpg, png, gif, webp)'), false);
-        }
-        cb(null, true);
-      },
-      limits: { fileSize: 5 * 1024 * 1024 },
-    }),
-  )
+  @UseInterceptors(FileInterceptor('cover', { storage: memoryStorage(), fileFilter: imageFilter, limits: { fileSize: 5 * 1024 * 1024 } }))
   async uploadCover(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
     if (!file) throw new BadRequestException('No se recibió ningún archivo');
     return this.songsService.updateCoverImage(id, file.buffer, file.mimetype);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/demo')
+  @UseInterceptors(FileInterceptor('demo', { storage: memoryStorage(), fileFilter: audioFilter, limits: { fileSize: 20 * 1024 * 1024 } }))
+  async uploadDemo(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
+    if (!file) throw new BadRequestException('No se recibió ningún archivo');
+    return this.songsService.updateDemoAudio(id, file.buffer, file.mimetype);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/full')
+  @UseInterceptors(FileInterceptor('full', { storage: memoryStorage(), fileFilter: audioFilter, limits: { fileSize: 50 * 1024 * 1024 } }))
+  async uploadFull(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
+    if (!file) throw new BadRequestException('No se recibió ningún archivo');
+    return this.songsService.updateFullAudio(id, file.buffer, file.mimetype);
   }
 }

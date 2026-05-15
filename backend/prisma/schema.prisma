@@ -72,8 +72,10 @@ model Song {
   genre      String
   language   Language
   duration   Int
-  demoUrl    String
-  fullUrl    String
+  demoAudio     Bytes?
+  demoMimeType  String?
+  fullAudio     Bytes?
+  fullMimeType  String?
   coverImage    Bytes?
   coverMimeType String?
   lyrics        String?

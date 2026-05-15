@@ -40,4 +40,22 @@ export const songsService = {
     const { data } = await api.delete<Song>(`/songs/${id}/cover`);
     return data;
   },
+
+  uploadDemo: async (id: string, file: File): Promise<Song> => {
+    const formData = new FormData();
+    formData.append('demo', file);
+    const { data } = await api.post<Song>(`/songs/${id}/demo`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data;
+  },
+
+  uploadFull: async (id: string, file: File): Promise<Song> => {
+    const formData = new FormData();
+    formData.append('full', file);
+    const { data } = await api.post<Song>(`/songs/${id}/full`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data;
+  },
 };

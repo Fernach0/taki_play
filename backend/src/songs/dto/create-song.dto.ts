@@ -5,7 +5,6 @@ import {
   IsOptional,
   IsPositive,
   IsString,
-  IsUrl,
 } from 'class-validator';
 import { Language } from '@prisma/client';
 
@@ -34,12 +33,6 @@ export class CreateSongDto {
   @IsInt()
   @IsPositive({ message: 'La duración debe ser mayor a 0 (en segundos)' })
   duration: number;
-
-  @IsUrl({}, { message: 'demoUrl debe ser una URL válida' })
-  demoUrl: string;
-
-  @IsUrl({}, { message: 'fullUrl debe ser una URL válida' })
-  fullUrl: string;
 
   @IsOptional()
   @IsString()

@@ -68,7 +68,8 @@ export function QueueDJPanel() {
   const nowPlaying = allQueues.filter((item) => item.currentlyPlaying !== null);
   const isLoading = loadingGlobal || loadingPlaying;
 
-  const currentUrl = nowPlaying[0]?.currentlyPlaying?.song.fullUrl ?? null;
+  const currentSongId = nowPlaying[0]?.currentlyPlaying?.song.id ?? null;
+  const currentUrl = currentSongId ? `${process.env.NEXT_PUBLIC_API_URL}/songs/${currentSongId}/full` : null;
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;

@@ -8,8 +8,6 @@ export interface Song {
   genre: string;
   language: Language;
   duration: number;
-  demoUrl: string;
-  fullUrl?: string;
   lyrics?: string | null;
   isActive?: boolean;
   createdAt?: string;
@@ -31,8 +29,6 @@ export interface CreateSongDto {
   genre: string;
   language: Language;
   duration: number;
-  demoUrl: string;
-  fullUrl: string;
   lyrics?: string;
 }
 
