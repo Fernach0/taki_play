@@ -19,7 +19,6 @@ export declare class TablesController {
                 title: string;
                 artist: string;
                 language: import(".prisma/client").$Enums.Language;
-                coverUrl: string;
             };
         } & {
             id: string;

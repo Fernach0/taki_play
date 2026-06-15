@@ -47,19 +47,6 @@ __decorate([
     __metadata("design:type", Number)
 ], CreateSongDto.prototype, "duration", void 0);
 __decorate([
-    (0, class_validator_1.IsUrl)({}, { message: 'demoUrl debe ser una URL válida' }),
-    __metadata("design:type", String)
-], CreateSongDto.prototype, "demoUrl", void 0);
-__decorate([
-    (0, class_validator_1.IsUrl)({}, { message: 'fullUrl debe ser una URL válida' }),
-    __metadata("design:type", String)
-], CreateSongDto.prototype, "fullUrl", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsUrl)({}, { message: 'coverUrl debe ser una URL válida' }),
-    __metadata("design:type", String)
-], CreateSongDto.prototype, "coverUrl", void 0);
-__decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

@@ -14,8 +14,6 @@ export declare class SongsService {
         genre: string;
         language: import(".prisma/client").$Enums.Language;
         duration: number;
-        demoUrl: string;
-        coverUrl: string;
         lyrics: string;
     }[]>;
     findOne(id: string): Promise<{
@@ -27,76 +25,91 @@ export declare class SongsService {
         genre: string;
         language: import(".prisma/client").$Enums.Language;
         duration: number;
-        demoUrl: string;
-        coverUrl: string;
         lyrics: string;
     }>;
     create(createSongDto: CreateSongDto): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         isActive: boolean;
         title: string;
         artist: string;
-        album: string | null;
+        album: string;
         genre: string;
         language: import(".prisma/client").$Enums.Language;
         duration: number;
-        demoUrl: string;
-        fullUrl: string;
-        coverUrl: string | null;
-        lyrics: string | null;
+        lyrics: string;
     }>;
     update(id: string, updateSongDto: UpdateSongDto): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         isActive: boolean;
         title: string;
         artist: string;
-        album: string | null;
+        album: string;
         genre: string;
         language: import(".prisma/client").$Enums.Language;
         duration: number;
-        demoUrl: string;
-        fullUrl: string;
-        coverUrl: string | null;
-        lyrics: string | null;
+        lyrics: string;
     }>;
     remove(id: string): Promise<{
         message: string;
         id: string;
+        deleted: boolean;
     }>;
-    updateCoverUrl(id: string, coverUrl: string | null): Promise<{
+    updateCoverImage(id: string, buffer: Buffer, mimeType: string): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         isActive: boolean;
         title: string;
         artist: string;
-        album: string | null;
+        album: string;
         genre: string;
         language: import(".prisma/client").$Enums.Language;
         duration: number;
-        demoUrl: string;
-        fullUrl: string;
-        coverUrl: string | null;
-        lyrics: string | null;
+        lyrics: string;
+    }>;
+    removeCoverImage(id: string): Promise<{
+        id: string;
+        isActive: boolean;
+        title: string;
+        artist: string;
+        album: string;
+        genre: string;
+        language: import(".prisma/client").$Enums.Language;
+        duration: number;
+        lyrics: string;
+    }>;
+    findCoverImage(id: string): Promise<{
+        coverImage: Buffer<ArrayBufferLike>;
+        coverMimeType: string;
+    }>;
+    updateDemoAudio(id: string, buffer: Buffer, mimeType: string): Promise<{
+        id: string;
+        isActive: boolean;
+        title: string;
+        artist: string;
+        album: string;
+        genre: string;
+        language: import(".prisma/client").$Enums.Language;
+        duration: number;
+        lyrics: string;
+    }>;
+    updateFullAudio(id: string, buffer: Buffer, mimeType: string): Promise<{
+        id: string;
+        isActive: boolean;
+        title: string;
+        artist: string;
+        album: string;
+        genre: string;
+        language: import(".prisma/client").$Enums.Language;
+        duration: number;
+        lyrics: string;
+    }>;
+    findAudio(id: string, type: 'demo' | 'full'): Promise<{
+        demoAudio: Buffer<ArrayBufferLike>;
+        demoMimeType: string;
+        fullAudio: Buffer<ArrayBufferLike>;
+        fullMimeType: string;
     }>;
     findOneForAdmin(id: string): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         isActive: boolean;
-        title: string;
-        artist: string;
-        album: string | null;
-        genre: string;
-        language: import(".prisma/client").$Enums.Language;
-        duration: number;
-        demoUrl: string;
-        fullUrl: string;
-        coverUrl: string | null;
-        lyrics: string | null;
     }>;
 }

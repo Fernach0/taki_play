@@ -6,9 +6,6 @@ export declare class UpdateSongDto {
     genre?: string;
     language?: Language;
     duration?: number;
-    demoUrl?: string;
-    fullUrl?: string;
-    coverUrl?: string;
     lyrics?: string;
     isActive?: boolean;
 }

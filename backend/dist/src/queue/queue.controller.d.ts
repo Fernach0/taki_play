@@ -11,7 +11,6 @@ export declare class QueueController {
             artist: string;
             genre: string;
             language: import(".prisma/client").$Enums.Language;
-            coverUrl: string;
         };
     } & {
         id: string;
@@ -33,7 +32,6 @@ export declare class QueueController {
                 artist: string;
                 genre: string;
                 language: import(".prisma/client").$Enums.Language;
-                coverUrl: string;
             };
         } & {
             id: string;
@@ -57,7 +55,6 @@ export declare class QueueController {
                 id: string;
                 title: string;
                 artist: string;
-                fullUrl: string;
             };
         };
     }[]>;
@@ -71,7 +68,6 @@ export declare class QueueController {
             artist: string;
             genre: string;
             language: import(".prisma/client").$Enums.Language;
-            coverUrl: string;
         };
         requestedBy: string;
         position: number;
@@ -85,7 +81,6 @@ export declare class QueueController {
             artist: string;
             genre: string;
             language: import(".prisma/client").$Enums.Language;
-            coverUrl: string;
         };
     } & {
         id: string;

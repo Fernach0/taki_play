@@ -20,8 +20,6 @@ const PUBLIC_SONG_SELECT = {
     genre: true,
     language: true,
     duration: true,
-    demoUrl: true,
-    coverUrl: true,
     lyrics: true,
     isActive: true,
 };
@@ -35,14 +33,10 @@ let SongsService = class SongsService {
             where: {
                 ...(includeInactive ? {} : { isActive: true }),
                 AND: [
-                    search
-                        ? {
-                            OR: [
-                                { title: { contains: search, mode: 'insensitive' } },
-                                { artist: { contains: search, mode: 'insensitive' } },
-                            ],
-                        }
-                        : {},
+                    search ? { OR: [
+                            { title: { contains: search, mode: 'insensitive' } },
+                            { artist: { contains: search, mode: 'insensitive' } },
+                        ] } : {},
                     language ? { language } : {},
                     genre ? { genre: { contains: genre, mode: 'insensitive' } } : {},
                     artist ? { artist: { contains: artist, mode: 'insensitive' } } : {},
@@ -53,45 +47,84 @@ let SongsService = class SongsService {
         });
     }
     async findOne(id) {
-        const song = await this.prisma.song.findUnique({
-            where: { id },
-            select: PUBLIC_SONG_SELECT,
-        });
-        if (!song) {
+        const song = await this.prisma.song.findUnique({ where: { id }, select: PUBLIC_SONG_SELECT });
+        if (!song)
             throw new common_1.NotFoundException('Canción no encontrada');
-        }
         return song;
     }
     async create(createSongDto) {
-        return this.prisma.song.create({ data: createSongDto });
+        return this.prisma.song.create({ data: createSongDto, select: PUBLIC_SONG_SELECT });
     }
     async update(id, updateSongDto) {
         await this.findOneForAdmin(id);
-        return this.prisma.song.update({
-            where: { id },
-            data: updateSongDto,
-        });
+        return this.prisma.song.update({ where: { id }, data: updateSongDto, select: PUBLIC_SONG_SELECT });
     }
     async remove(id) {
-        await this.findOneForAdmin(id);
-        await this.prisma.song.update({
-            where: { id },
-            data: { isActive: false },
-        });
-        return { message: 'Canción desactivada exitosamente', id };
+        const song = await this.findOneForAdmin(id);
+        if (song.isActive) {
+            await this.prisma.song.update({ where: { id }, data: { isActive: false } });
+            return { message: 'Canción desactivada', id, deleted: false };
+        }
+        else {
+            await this.prisma.queueItem.deleteMany({ where: { songId: id } });
+            await this.prisma.song.delete({ where: { id } });
+            return { message: 'Canción eliminada permanentemente', id, deleted: true };
+        }
     }
-    async updateCoverUrl(id, coverUrl) {
+    async updateCoverImage(id, buffer, mimeType) {
         await this.findOneForAdmin(id);
         return this.prisma.song.update({
             where: { id },
-            data: { coverUrl },
+            data: { coverImage: buffer, coverMimeType: mimeType },
+            select: PUBLIC_SONG_SELECT,
         });
     }
-    async findOneForAdmin(id) {
-        const song = await this.prisma.song.findUnique({ where: { id } });
-        if (!song) {
+    async removeCoverImage(id) {
+        await this.findOneForAdmin(id);
+        return this.prisma.song.update({
+            where: { id },
+            data: { coverImage: null, coverMimeType: null },
+            select: PUBLIC_SONG_SELECT,
+        });
+    }
+    async findCoverImage(id) {
+        const song = await this.prisma.song.findUnique({
+            where: { id },
+            select: { coverImage: true, coverMimeType: true },
+        });
+        if (!song)
             throw new common_1.NotFoundException('Canción no encontrada');
-        }
+        return song;
+    }
+    async updateDemoAudio(id, buffer, mimeType) {
+        await this.findOneForAdmin(id);
+        return this.prisma.song.update({
+            where: { id },
+            data: { demoAudio: buffer, demoMimeType: mimeType },
+            select: PUBLIC_SONG_SELECT,
+        });
+    }
+    async updateFullAudio(id, buffer, mimeType) {
+        await this.findOneForAdmin(id);
+        return this.prisma.song.update({
+            where: { id },
+            data: { fullAudio: buffer, fullMimeType: mimeType },
+            select: PUBLIC_SONG_SELECT,
+        });
+    }
+    async findAudio(id, type) {
+        const select = type === 'demo'
+            ? { demoAudio: true, demoMimeType: true }
+            : { fullAudio: true, fullMimeType: true };
+        const song = await this.prisma.song.findUnique({ where: { id }, select });
+        if (!song)
+            throw new common_1.NotFoundException('Canción no encontrada');
+        return song;
+    }
+    async findOneForAdmin(id) {
+        const song = await this.prisma.song.findUnique({ where: { id }, select: { id: true, isActive: true } });
+        if (!song)
+            throw new common_1.NotFoundException('Canción no encontrada');
         return song;
     }
 };

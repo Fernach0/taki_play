@@ -13,7 +13,6 @@ export declare class QueueService {
             artist: string;
             genre: string;
             language: import(".prisma/client").$Enums.Language;
-            coverUrl: string;
         };
     } & {
         id: string;
@@ -35,7 +34,6 @@ export declare class QueueService {
                 artist: string;
                 genre: string;
                 language: import(".prisma/client").$Enums.Language;
-                coverUrl: string;
             };
         } & {
             id: string;
@@ -59,7 +57,6 @@ export declare class QueueService {
                 id: string;
                 title: string;
                 artist: string;
-                fullUrl: string;
             };
         };
     }[]>;
@@ -73,7 +70,6 @@ export declare class QueueService {
             artist: string;
             genre: string;
             language: import(".prisma/client").$Enums.Language;
-            coverUrl: string;
         };
         requestedBy: string;
         position: number;
@@ -87,7 +83,6 @@ export declare class QueueService {
             artist: string;
             genre: string;
             language: import(".prisma/client").$Enums.Language;
-            coverUrl: string;
         };
     } & {
         id: string;

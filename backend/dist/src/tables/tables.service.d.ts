@@ -26,7 +26,6 @@ export declare class TablesService {
                 title: string;
                 artist: string;
                 language: import(".prisma/client").$Enums.Language;
-                coverUrl: string;
             };
         } & {
             id: string;

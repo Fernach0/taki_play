@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import { SongsService } from './songs.service';
 import { CreateSongDto } from './dto/create-song.dto';
 import { UpdateSongDto } from './dto/update-song.dto';
@@ -14,8 +15,6 @@ export declare class SongsController {
         genre: string;
         language: import(".prisma/client").$Enums.Language;
         duration: number;
-        demoUrl: string;
-        coverUrl: string;
         lyrics: string;
     }[]>;
     findOne(id: string): Promise<{
@@ -27,60 +26,80 @@ export declare class SongsController {
         genre: string;
         language: import(".prisma/client").$Enums.Language;
         duration: number;
-        demoUrl: string;
-        coverUrl: string;
         lyrics: string;
     }>;
+    getCover(id: string, res: Response): Promise<void>;
+    getDemo(id: string, res: Response): Promise<void>;
+    getFull(id: string, res: Response): Promise<void>;
     create(createSongDto: CreateSongDto): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         isActive: boolean;
         title: string;
         artist: string;
-        album: string | null;
+        album: string;
         genre: string;
         language: import(".prisma/client").$Enums.Language;
         duration: number;
-        demoUrl: string;
-        fullUrl: string;
-        coverUrl: string | null;
-        lyrics: string | null;
+        lyrics: string;
     }>;
     update(id: string, updateSongDto: UpdateSongDto): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         isActive: boolean;
         title: string;
         artist: string;
-        album: string | null;
+        album: string;
         genre: string;
         language: import(".prisma/client").$Enums.Language;
         duration: number;
-        demoUrl: string;
-        fullUrl: string;
-        coverUrl: string | null;
-        lyrics: string | null;
+        lyrics: string;
     }>;
     remove(id: string): Promise<{
         message: string;
         id: string;
+        deleted: boolean;
     }>;
-    uploadCover(id: string, file: Express.Multer.File, req: any): Promise<{
+    removeCover(id: string): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
         isActive: boolean;
         title: string;
         artist: string;
-        album: string | null;
+        album: string;
         genre: string;
         language: import(".prisma/client").$Enums.Language;
         duration: number;
-        demoUrl: string;
-        fullUrl: string;
-        coverUrl: string | null;
-        lyrics: string | null;
+        lyrics: string;
+    }>;
+    uploadCover(id: string, file: Express.Multer.File): Promise<{
+        id: string;
+        isActive: boolean;
+        title: string;
+        artist: string;
+        album: string;
+        genre: string;
+        language: import(".prisma/client").$Enums.Language;
+        duration: number;
+        lyrics: string;
+    }>;
+    uploadDemo(id: string, file: Express.Multer.File): Promise<{
+        id: string;
+        isActive: boolean;
+        title: string;
+        artist: string;
+        album: string;
+        genre: string;
+        language: import(".prisma/client").$Enums.Language;
+        duration: number;
+        lyrics: string;
+    }>;
+    uploadFull(id: string, file: Express.Multer.File): Promise<{
+        id: string;
+        isActive: boolean;
+        title: string;
+        artist: string;
+        album: string;
+        genre: string;
+        language: import(".prisma/client").$Enums.Language;
+        duration: number;
+        lyrics: string;
     }>;
 }

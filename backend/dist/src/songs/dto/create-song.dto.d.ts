@@ -6,8 +6,5 @@ export declare class CreateSongDto {
     genre: string;
     language: Language;
     duration: number;
-    demoUrl: string;
-    fullUrl: string;
-    coverUrl?: string;
     lyrics?: string;
 }
