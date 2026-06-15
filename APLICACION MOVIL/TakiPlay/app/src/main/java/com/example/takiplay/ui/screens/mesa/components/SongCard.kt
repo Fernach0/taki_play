@@ -9,6 +9,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +25,7 @@ import coil.compose.AsyncImage
 import com.example.takiplay.data.model.Song
 import com.example.takiplay.ui.components.LanguageBadge
 import com.example.takiplay.ui.theme.*
+import com.example.takiplay.util.coverUrlFor
 import com.example.takiplay.util.formatDuration
 
 @Composable
@@ -41,12 +46,14 @@ fun SongCard(song: Song, onClick: (Song) -> Unit) {
                 .background(DarkBase),
             contentAlignment = Alignment.Center,
         ) {
-            if (song.coverUrl != null) {
+            var imageFailed by remember(song.id) { mutableStateOf(false) }
+            if (!imageFailed) {
                 AsyncImage(
-                    model = song.coverUrl,
+                    model = coverUrlFor(song.id),
                     contentDescription = song.title,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize(),
+                    onError = { imageFailed = true },
                 )
             } else {
                 // Andean geometric placeholder

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.takiplay.data.api.ApiClient
 import com.example.takiplay.data.model.*
 import com.example.takiplay.util.PreferencesManager
+import com.example.takiplay.util.retryWithBackoff
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 data class MesaUiState(
     val songs: List<Song> = emptyList(),
     val loadingSongs: Boolean = true,
+    val songsError: String? = null,
     val search: String = "",
     val langFilter: String = Language.ALL,
     val sessionId: String? = null,
@@ -47,8 +49,11 @@ class MesaViewModel(
 
     private fun joinTable() {
         viewModelScope.launch {
+            _state.value = _state.value.copy(joiningError = null)
             try {
-                val session = ApiClient.sessions.joinTable(JoinTableBody(qrCode))
+                val session = retryWithBackoff {
+                    ApiClient.sessions.joinTable(JoinTableBody(qrCode))
+                }
                 prefs.saveSession(session)
                 _state.value = _state.value.copy(
                     sessionId   = session.sessionId,
@@ -66,19 +71,33 @@ class MesaViewModel(
         }
     }
 
+    fun retryJoinTable() = joinTable()
+
     fun loadSongs(search: String? = null, language: String? = null) {
         viewModelScope.launch {
-            _state.value = _state.value.copy(loadingSongs = true)
+            _state.value = _state.value.copy(loadingSongs = true, songsError = null)
             try {
-                val songs = ApiClient.songs.getSongs(
-                    search   = search?.ifBlank { null },
-                    language = if (language == Language.ALL || language == null) null else language,
+                val songs = retryWithBackoff {
+                    ApiClient.songs.getSongs(
+                        search   = search?.ifBlank { null },
+                        language = if (language == Language.ALL || language == null) null else language,
+                    )
+                }
+                _state.value = _state.value.copy(songs = songs, loadingSongs = false, songsError = null)
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(
+                    loadingSongs = false,
+                    songsError = "No se pudo cargar el catálogo. El servidor puede estar despertando, intenta de nuevo.",
                 )
-                _state.value = _state.value.copy(songs = songs, loadingSongs = false)
-            } catch (_: Exception) {
-                _state.value = _state.value.copy(loadingSongs = false)
             }
         }
+    }
+
+    fun retryLoadSongs() {
+        loadSongs(
+            search = _state.value.search.ifBlank { null },
+            language = _state.value.langFilter.takeIf { it != Language.ALL },
+        )
     }
 
     fun setSearch(q: String) {

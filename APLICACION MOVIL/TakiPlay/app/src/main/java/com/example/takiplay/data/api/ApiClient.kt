@@ -10,7 +10,7 @@ object ApiClient {
     // DESARROLLO: usa localhost con "adb reverse tcp:3000 tcp:3000"
     // Dispositivo físico → cambia a http://192.168.X.X:3000/api/v1/
     // Producción → https://taki-play.onrender.com/api/v1/
-    const val BASE_URL = "http://localhost:3000/api/v1/"
+    const val BASE_URL = "https://taki-play.onrender.com/api/v1/"
 
     private var token: String? = null
 
@@ -22,8 +22,9 @@ object ApiClient {
     }
 
     private val okHttpClient = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
+        .connectTimeout(20, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
         .addInterceptor { chain ->
             val builder = chain.request().newBuilder()
                 .header("Content-Type", "application/json")

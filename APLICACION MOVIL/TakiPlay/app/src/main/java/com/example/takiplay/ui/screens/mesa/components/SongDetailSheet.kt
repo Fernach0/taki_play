@@ -18,11 +18,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.util.Log
 import coil.compose.AsyncImage
 import com.example.takiplay.data.model.Song
 import com.example.takiplay.ui.components.LanguageBadge
 import com.example.takiplay.ui.theme.*
 import com.example.takiplay.util.Strings
+import com.example.takiplay.util.coverUrlFor
+import com.example.takiplay.util.demoUrlFor
 import com.example.takiplay.util.formatDuration
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,6 +48,9 @@ fun SongDetailSheet(
     // Audio player state
     var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
     var isPlaying by remember { mutableStateOf(false) }
+    var isLoadingAudio by remember { mutableStateOf(false) }
+    var audioError by remember { mutableStateOf(false) }
+    var imageFailed by remember(song.id) { mutableStateOf(false) }
 
     DisposableEffect(song.id) {
         onDispose {
@@ -86,12 +92,13 @@ fun SongDetailSheet(
                         .border(1.dp, DarkBorder, RoundedCornerShape(12.dp)),
                     contentAlignment = Alignment.Center,
                 ) {
-                    if (song.coverUrl != null) {
+                    if (!imageFailed) {
                         AsyncImage(
-                            model = song.coverUrl,
+                            model = coverUrlFor(song.id),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.fillMaxSize(),
+                            onError = { imageFailed = true },
                         )
                     } else {
                         Icon(Icons.Default.MusicNote, contentDescription = null,
@@ -135,20 +142,43 @@ fun SongDetailSheet(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     IconButton(
+                        enabled = !isLoadingAudio,
                         onClick = {
                             if (isPlaying) {
                                 mediaPlayer?.pause()
                                 isPlaying = false
-                            } else {
-                                if (mediaPlayer == null) {
-                                    mediaPlayer = MediaPlayer().apply {
-                                        setDataSource(song.demoUrl)
-                                        setOnCompletionListener { isPlaying = false }
-                                        prepare()
-                                    }
-                                }
+                            } else if (mediaPlayer != null) {
                                 mediaPlayer?.start()
                                 isPlaying = true
+                            } else {
+                                audioError = false
+                                isLoadingAudio = true
+                                try {
+                                    mediaPlayer = MediaPlayer().apply {
+                                        setDataSource(demoUrlFor(song.id))
+                                        setOnPreparedListener {
+                                            isLoadingAudio = false
+                                            it.start()
+                                            isPlaying = true
+                                        }
+                                        setOnCompletionListener {
+                                            isPlaying = false
+                                        }
+                                        setOnErrorListener { _, _, _ ->
+                                            isLoadingAudio = false
+                                            isPlaying = false
+                                            audioError = true
+                                            true
+                                        }
+                                        prepareAsync()
+                                    }
+                                } catch (e: Exception) {
+                                    Log.e("SongDetailSheet", "Error al preparar el audio", e)
+                                    isLoadingAudio = false
+                                    audioError = true
+                                    mediaPlayer?.release()
+                                    mediaPlayer = null
+                                }
                             }
                         },
                         modifier = Modifier
@@ -156,17 +186,30 @@ fun SongDetailSheet(
                             .background(IncaGold.copy(alpha = 0.15f), RoundedCornerShape(24.dp))
                             .border(1.dp, IncaGold.copy(alpha = 0.4f), RoundedCornerShape(24.dp))
                     ) {
-                        Icon(
-                            imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                            contentDescription = null,
-                            tint = IncaGold,
-                            modifier = Modifier.size(28.dp)
-                        )
+                        if (isLoadingAudio) {
+                            CircularProgressIndicator(color = IncaGold, modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                        } else {
+                            Icon(
+                                imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                contentDescription = null,
+                                tint = IncaGold,
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
                     }
                     Spacer(Modifier.width(16.dp))
                     Text(
-                        text = if (isPlaying) "Reproduciendo demo..." else "Demo disponible",
-                        color = if (isPlaying) IncaGold else SoilBrown,
+                        text = when {
+                            audioError -> "No se pudo cargar el demo"
+                            isLoadingAudio -> "Cargando demo..."
+                            isPlaying -> "Reproduciendo demo..."
+                            else -> "Demo disponible"
+                        },
+                        color = when {
+                            audioError -> AmberWarn
+                            isPlaying -> IncaGold
+                            else -> SoilBrown
+                        },
                         fontSize = 12.sp
                     )
                 }

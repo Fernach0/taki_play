@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.takiplay.data.api.ApiClient
 import com.example.takiplay.data.model.Table
+import com.example.takiplay.util.retryWithBackoff
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,7 +27,7 @@ class TableSelectionViewModel : ViewModel() {
         viewModelScope.launch {
             _state.value = TableSelectionUiState(isLoading = true)
             try {
-                val all = ApiClient.tables.getTables()
+                val all = retryWithBackoff { ApiClient.tables.getTables() }
                 val active = all.filter { it.isActive }
                 _state.value = TableSelectionUiState(tables = active, isLoading = false)
             } catch (e: Exception) {

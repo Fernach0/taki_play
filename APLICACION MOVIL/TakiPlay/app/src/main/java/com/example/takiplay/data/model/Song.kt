@@ -10,7 +10,7 @@ data class Song(
     val genre: String,
     val language: String,
     val duration: Int,
-    val demoUrl: String,
+    val demoUrl: String? = null,
     val fullUrl: String? = null,
     val coverUrl: String? = null,
     val lyrics: String? = null,

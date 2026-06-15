@@ -135,10 +135,39 @@ fun MesaScreen(
                 Box(modifier = Modifier.weight(1f)) {
                     when {
                         state.loadingSongs -> {
-                            CircularProgressIndicator(
-                                color = IncaGold,
-                                modifier = Modifier.align(Alignment.Center)
-                            )
+                            Column(
+                                modifier = Modifier.align(Alignment.Center),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                            ) {
+                                CircularProgressIndicator(color = IncaGold)
+                                Spacer(Modifier.height(12.dp))
+                                Text(
+                                    text = "Conectando con el servidor...\nEsto puede tardar hasta 1 minuto si estaba inactivo.",
+                                    color = SoilBrown,
+                                    fontSize = 12.sp,
+                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                )
+                            }
+                        }
+                        state.songsError != null -> {
+                            Column(
+                                modifier = Modifier.align(Alignment.Center).padding(24.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                            ) {
+                                Text(
+                                    text = state.songsError!!,
+                                    color = KichwaRojo,
+                                    fontSize = 13.sp,
+                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                )
+                                Spacer(Modifier.height(12.dp))
+                                Button(
+                                    onClick = { vm.retryLoadSongs() },
+                                    colors = ButtonDefaults.buttonColors(containerColor = IncaGold, contentColor = DarkBase),
+                                ) {
+                                    Text("Reintentar")
+                                }
+                            }
                         }
                         state.songs.isEmpty() -> {
                             Text(
@@ -176,16 +205,24 @@ fun MesaScreen(
 
             // Joining error banner
             if (state.joiningError != null) {
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.TopCenter)
                         .padding(16.dp)
                         .background(KichwaRojo.copy(alpha = 0.15f), RoundedCornerShape(10.dp))
                         .border(1.dp, KichwaRojo.copy(alpha = 0.4f), RoundedCornerShape(10.dp))
-                        .padding(12.dp)
+                        .padding(12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(state.joiningError!!, color = KichwaRojo, fontSize = 13.sp)
+                    Spacer(Modifier.height(8.dp))
+                    Button(
+                        onClick = { vm.retryJoinTable() },
+                        colors = ButtonDefaults.buttonColors(containerColor = IncaGold, contentColor = DarkBase),
+                    ) {
+                        Text("Reintentar")
+                    }
                 }
             }
         }

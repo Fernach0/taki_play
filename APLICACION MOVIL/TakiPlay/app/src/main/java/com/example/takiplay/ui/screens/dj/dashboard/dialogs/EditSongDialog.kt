@@ -26,7 +26,7 @@ fun EditSongDialog(song: Song, t: Strings, onConfirm: (UpdateSongDto) -> Unit, o
     var genre    by remember { mutableStateOf(song.genre) }
     var language by remember { mutableStateOf(song.language) }
     var duration by remember { mutableStateOf(song.duration.toString()) }
-    var demoUrl  by remember { mutableStateOf(song.demoUrl) }
+    var demoUrl  by remember { mutableStateOf(song.demoUrl ?: "") }
     var fullUrl  by remember { mutableStateOf(song.fullUrl ?: "") }
     var coverUrl by remember { mutableStateOf(song.coverUrl ?: "") }
     var lyrics   by remember { mutableStateOf(song.lyrics ?: "") }

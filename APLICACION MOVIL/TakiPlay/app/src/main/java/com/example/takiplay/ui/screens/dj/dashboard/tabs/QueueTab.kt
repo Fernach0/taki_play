@@ -23,6 +23,7 @@ import com.example.takiplay.data.model.GlobalQueueItem
 import com.example.takiplay.ui.components.LanguageBadge
 import com.example.takiplay.ui.theme.*
 import com.example.takiplay.util.Strings
+import com.example.takiplay.util.coverUrlFor
 import com.example.takiplay.util.timeAgo
 
 @Composable
@@ -191,9 +192,11 @@ private fun GlobalQueueItemRow(
                 .border(1.dp, DarkBorder, RoundedCornerShape(8.dp)),
             contentAlignment = Alignment.Center,
         ) {
-            if (item.song.coverUrl != null) {
-                AsyncImage(model = item.song.coverUrl, contentDescription = null,
-                    contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
+            var imageFailed by remember(item.song.id) { mutableStateOf(false) }
+            if (!imageFailed) {
+                AsyncImage(model = coverUrlFor(item.song.id), contentDescription = null,
+                    contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize(),
+                    onError = { imageFailed = true })
             } else {
                 Icon(Icons.Default.MusicNote, contentDescription = null, tint = SoilBrown, modifier = Modifier.size(18.dp))
             }
