@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { ImagePlus, Trash2, FileAudio, Music } from 'lucide-react';
+import { ImagePlus, Trash2, Music } from 'lucide-react';
 import { ModalWrapper } from './ModalWrapper';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -36,13 +36,11 @@ export function EditSongModal({ isOpen, onClose, song }: EditSongModalProps) {
   const qc = useQueryClient();
 
   const coverInputRef = useRef<HTMLInputElement>(null);
-  const demoInputRef = useRef<HTMLInputElement>(null);
   const fullInputRef = useRef<HTMLInputElement>(null);
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [coverAction, setCoverAction] = useState<'none' | 'upload' | 'remove'>('none');
   const [coverFile, setCoverFile] = useState<File | null>(null);
-  const [demoFile, setDemoFile] = useState<File | null>(null);
   const [fullFile, setFullFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -64,7 +62,6 @@ export function EditSongModal({ isOpen, onClose, song }: EditSongModalProps) {
       setPreviewUrl(null);
       setCoverAction('none');
       setCoverFile(null);
-      setDemoFile(null);
       setFullFile(null);
     }
   }, [song, reset]);
@@ -97,7 +94,6 @@ export function EditSongModal({ isOpen, onClose, song }: EditSongModalProps) {
       setUploading(true);
       if (coverAction === 'upload' && coverFile) await songsService.uploadCover(song!.id, coverFile);
       else if (coverAction === 'remove') await songsService.removeCover(song!.id);
-      if (demoFile) await songsService.uploadDemo(song!.id, demoFile);
       if (fullFile) await songsService.uploadFull(song!.id, fullFile);
     },
     onSuccess: () => {
@@ -162,30 +158,18 @@ export function EditSongModal({ isOpen, onClose, song }: EditSongModalProps) {
           </div>
         </div>
 
-        {/* ── Archivos de audio ── */}
-        <div className="grid grid-cols-2 gap-3">
-          <div onClick={() => demoInputRef.current?.click()}
-            className="flex flex-col items-center gap-2 p-3 rounded-xl border border-dashed border-dark-border bg-dark-base hover:border-inca-gold/50 cursor-pointer transition-colors">
-            <FileAudio className={`w-5 h-5 ${demoFile ? 'text-selva-verde' : 'text-soil-brown'}`} />
-            <p className="text-xs font-medium text-gray-300">Demo (15-30 seg)</p>
-            <p className="text-xs text-soil-brown truncate w-full text-center">
-              {demoFile ? demoFile.name : 'Reemplazar MP3'}
-            </p>
-            <input ref={demoInputRef} type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg"
-              className="hidden" onChange={(e) => setDemoFile(e.target.files?.[0] ?? null)} />
-          </div>
-          <div onClick={() => fullInputRef.current?.click()}
-            className="flex flex-col items-center gap-2 p-3 rounded-xl border border-dashed border-dark-border bg-dark-base hover:border-inca-gold/50 cursor-pointer transition-colors">
-            <Music className={`w-5 h-5 ${fullFile ? 'text-selva-verde' : 'text-soil-brown'}`} />
-            <p className="text-xs font-medium text-gray-300">Audio completo</p>
-            <p className="text-xs text-soil-brown truncate w-full text-center">
-              {fullFile ? fullFile.name : 'Reemplazar MP3'}
-            </p>
-            <input ref={fullInputRef} type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg"
-              className="hidden" onChange={(e) => setFullFile(e.target.files?.[0] ?? null)} />
-          </div>
+        {/* ── Archivo de audio ── */}
+        <div onClick={() => fullInputRef.current?.click()}
+          className="flex flex-col items-center gap-2 p-3 rounded-xl border border-dashed border-dark-border bg-dark-base hover:border-inca-gold/50 cursor-pointer transition-colors">
+          <Music className={`w-5 h-5 ${fullFile ? 'text-selva-verde' : 'text-soil-brown'}`} />
+          <p className="text-xs font-medium text-gray-300">Audio completo</p>
+          <p className="text-xs text-soil-brown truncate w-full text-center">
+            {fullFile ? fullFile.name : 'Reemplazar MP3'}
+          </p>
+          <input ref={fullInputRef} type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg"
+            className="hidden" onChange={(e) => setFullFile(e.target.files?.[0] ?? null)} />
         </div>
-        <p className="text-xs text-soil-brown -mt-2">Solo si quieres reemplazar el audio actual · Demo: máx 20 MB · Completo: máx 50 MB</p>
+        <p className="text-xs text-soil-brown -mt-2">Solo si quieres reemplazar el audio actual · máx 50 MB</p>
 
         {/* ── Campos del formulario ── */}
         <div className="grid grid-cols-2 gap-4">

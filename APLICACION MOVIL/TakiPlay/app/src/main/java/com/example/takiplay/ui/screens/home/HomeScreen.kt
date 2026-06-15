@@ -2,7 +2,6 @@ package com.example.takiplay.ui.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -29,7 +28,6 @@ fun HomeScreen(
     lang: String,
     onSetLang: (String) -> Unit,
     onSelectTable: () -> Unit,
-    onDJLogin: () -> Unit,
     prefs: PreferencesManager,
 ) {
     val scope = rememberCoroutineScope()
@@ -180,18 +178,6 @@ fun HomeScreen(
                     color     = SoilBrown,
                     fontSize  = 11.sp,
                     textAlign = TextAlign.Center,
-                )
-            }
-
-            // Link al DJ
-            Row(horizontalArrangement = Arrangement.Center) {
-                Text(text = t.homeIsDJ + " ", color = SoilBrown, fontSize = 12.sp)
-                Text(
-                    text       = t.homeDJLink,
-                    color      = IncaGold,
-                    fontSize   = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    modifier   = Modifier.clickable { onDJLogin() },
                 )
             }
         }

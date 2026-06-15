@@ -38,7 +38,6 @@ fun TakiPlayNavGraph() {
                 lang = lang,
                 onSetLang = { },
                 onSelectTable = { navController.navigate(Routes.TABLE_SELECTION) },
-                onDJLogin = { navController.navigate(Routes.DJ_LOGIN) },
                 prefs = prefs,
             )
         }

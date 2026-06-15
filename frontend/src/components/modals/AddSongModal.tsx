@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Music, FileAudio } from 'lucide-react';
+import { Music } from 'lucide-react';
 import { ModalWrapper } from './ModalWrapper';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -31,10 +31,8 @@ interface AddSongModalProps {
 
 export function AddSongModal({ isOpen, onClose }: AddSongModalProps) {
   const qc = useQueryClient();
-  const demoRef = useRef<HTMLInputElement>(null);
   const fullRef = useRef<HTMLInputElement>(null);
 
-  const [demoFile, setDemoFile] = useState<File | null>(null);
   const [fullFile, setFullFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -46,7 +44,6 @@ export function AddSongModal({ isOpen, onClose }: AddSongModalProps) {
     mutationFn: async (data: FormData) => {
       const song = await songsService.createSong(data);
       setUploading(true);
-      if (demoFile) await songsService.uploadDemo(song.id, demoFile);
       if (fullFile) await songsService.uploadFull(song.id, fullFile);
       return song;
     },
@@ -54,7 +51,6 @@ export function AddSongModal({ isOpen, onClose }: AddSongModalProps) {
       qc.invalidateQueries({ queryKey: ['songs'] });
       toast.success('Canción creada exitosamente');
       reset();
-      setDemoFile(null);
       setFullFile(null);
       setUploading(false);
       onClose();
@@ -65,10 +61,9 @@ export function AddSongModal({ isOpen, onClose }: AddSongModalProps) {
     },
   });
 
-  const handleFileSelect = (type: 'demo' | 'full', file: File | undefined) => {
+  const handleFileSelect = (file: File | undefined) => {
     if (!file) return;
-    if (type === 'demo') setDemoFile(file);
-    else setFullFile(file);
+    setFullFile(file);
   };
 
   return (
@@ -101,47 +96,25 @@ export function AddSongModal({ isOpen, onClose }: AddSongModalProps) {
           />
         </div>
 
-        {/* Archivos MP3 */}
-        <div className="grid grid-cols-2 gap-3">
-          {/* Demo */}
-          <div
-            onClick={() => demoRef.current?.click()}
-            className="flex flex-col items-center gap-2 p-4 rounded-xl border border-dashed border-dark-border bg-dark-base hover:border-inca-gold/50 cursor-pointer transition-colors"
-          >
-            <FileAudio className={`w-6 h-6 ${demoFile ? 'text-selva-verde' : 'text-soil-brown'}`} />
-            <p className="text-xs font-medium text-gray-300">Demo (15-30 seg)</p>
-            <p className="text-xs text-center text-soil-brown truncate w-full text-center">
-              {demoFile ? demoFile.name : 'Clic para seleccionar MP3'}
-            </p>
-            <input
-              ref={demoRef}
-              type="file"
-              accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg"
-              className="hidden"
-              onChange={(e) => handleFileSelect('demo', e.target.files?.[0])}
-            />
-          </div>
-
-          {/* Full */}
-          <div
-            onClick={() => fullRef.current?.click()}
-            className="flex flex-col items-center gap-2 p-4 rounded-xl border border-dashed border-dark-border bg-dark-base hover:border-inca-gold/50 cursor-pointer transition-colors"
-          >
-            <Music className={`w-6 h-6 ${fullFile ? 'text-selva-verde' : 'text-soil-brown'}`} />
-            <p className="text-xs font-medium text-gray-300">Audio completo</p>
-            <p className="text-xs text-center text-soil-brown truncate w-full text-center">
-              {fullFile ? fullFile.name : 'Clic para seleccionar MP3'}
-            </p>
-            <input
-              ref={fullRef}
-              type="file"
-              accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg"
-              className="hidden"
-              onChange={(e) => handleFileSelect('full', e.target.files?.[0])}
-            />
-          </div>
+        {/* Archivo MP3 */}
+        <div
+          onClick={() => fullRef.current?.click()}
+          className="flex flex-col items-center gap-2 p-4 rounded-xl border border-dashed border-dark-border bg-dark-base hover:border-inca-gold/50 cursor-pointer transition-colors"
+        >
+          <Music className={`w-6 h-6 ${fullFile ? 'text-selva-verde' : 'text-soil-brown'}`} />
+          <p className="text-xs font-medium text-gray-300">Audio completo</p>
+          <p className="text-xs text-center text-soil-brown truncate w-full text-center">
+            {fullFile ? fullFile.name : 'Clic para seleccionar MP3'}
+          </p>
+          <input
+            ref={fullRef}
+            type="file"
+            accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg"
+            className="hidden"
+            onChange={(e) => handleFileSelect(e.target.files?.[0])}
+          />
         </div>
-        <p className="text-xs text-soil-brown">Demo: máx 20 MB · Audio completo: máx 50 MB</p>
+        <p className="text-xs text-soil-brown">Audio completo: máx 50 MB</p>
 
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-gray-300">Letra</label>
