@@ -6,6 +6,7 @@ import { Song } from '@/types/song.types';
 import { SongCover } from '@/components/ui/SongCover';
 import { Badge } from '@/components/ui/Badge';
 import { formatDuration } from '@/lib/utils';
+import { useT } from '@/hooks/useT';
 
 interface RandomSongPanelProps {
   songs: Song[];
@@ -19,6 +20,7 @@ function pickRandom(songs: Song[], exclude?: string): Song {
 }
 
 export function RandomSongPanel({ songs, onSelect }: RandomSongPanelProps) {
+  const t = useT();
   const [current, setCurrent] = useState<Song | null>(null);
 
   useEffect(() => {
@@ -40,7 +42,7 @@ export function RandomSongPanel({ songs, onSelect }: RandomSongPanelProps) {
         <div className="px-4 pt-4 pb-3 flex items-center justify-between border-b border-dark-border">
           <div className="flex items-center gap-2">
             <Dices className="w-4 h-4 text-inca-gold" />
-            <span className="text-sm font-semibold text-warm-white">Sorpréndeme</span>
+            <span className="text-sm font-semibold text-warm-white">{t.randomTitle}</span>
           </div>
           <button
             onClick={shuffle}
@@ -88,7 +90,7 @@ export function RandomSongPanel({ songs, onSelect }: RandomSongPanelProps) {
             <div className="px-4 pb-3 flex items-center justify-between">
               <span className="text-xs text-soil-brown">{formatDuration(current.duration)}</span>
               <span className="text-xs font-semibold text-inca-gold group-hover:underline">
-                Pedir esta →
+                {t.randomRequest}
               </span>
             </div>
           </button>
@@ -100,13 +102,13 @@ export function RandomSongPanel({ songs, onSelect }: RandomSongPanelProps) {
               className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dark-border bg-dark-base hover:border-inca-gold/50 hover:bg-dark-surface transition-all text-sm text-soil-brown hover:text-inca-gold"
             >
               <Shuffle className="w-3.5 h-3.5" />
-              No me convence, otra
+              {t.randomShuffle}
             </button>
           </div>
           </>
         ) : (
           <div className="mx-4 my-4 aspect-square rounded-xl bg-dark-base flex items-center justify-center">
-            <p className="text-soil-brown text-sm">Cargando canciones...</p>
+            <p className="text-soil-brown text-sm">{t.randomLoading}</p>
           </div>
         )}
       </div>
@@ -114,7 +116,7 @@ export function RandomSongPanel({ songs, onSelect }: RandomSongPanelProps) {
       {/* Tip card */}
       <div className="rounded-2xl bg-dark-surface border border-dark-border p-4">
         <p className="text-xs text-soil-brown leading-relaxed">
-          💡 Toca cualquier canción para escucharla y pedirla al DJ.
+          {t.randomTip}
         </p>
       </div>
     </aside>

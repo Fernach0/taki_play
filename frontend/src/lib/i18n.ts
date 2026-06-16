@@ -19,6 +19,12 @@ export const translations = {
     lyrics: 'Letra',
     by: 'por',
     langName: 'Idioma',
+    // ── Canción aleatoria ──
+    randomTitle: 'Elige una canción al azar',
+    randomShuffle: 'No me convence, otra',
+    randomRequest: 'Pedir esta →',
+    randomLoading: 'Cargando canciones...',
+    randomTip: '💡 Toca cualquier canción para escucharla y pedirla al DJ.',
     // ── Home ──
     homeSubtitle: 'Karaoke Intercultural',
     homeLangs: 'Kichwa · Achuar · Español',
@@ -99,6 +105,12 @@ export const translations = {
     lyrics: 'Shimikuna',
     by: 'mañashka',
     langName: 'Rimay',
+    // ── Canción aleatoria ──
+    randomTitle: 'Shuk takita akllay',
+    randomShuffle: 'Mana allichikchu, shuktak',
+    randomRequest: 'Kay takita mañay →',
+    randomLoading: 'Takikunata maskakushkanchik...',
+    randomTip: '💡 Shuk takita hapiy, uyankipak shinami mañanki.',
     // ── DJ Login ──
     djSubtitle: 'DJ Kamachikpak',
     djLoginTitle: 'Yaykuy',
@@ -171,6 +183,12 @@ export const translations = {
     lyrics: 'Chichamuri',
     by: 'aents',
     langName: 'Chicham',
+    // ── Canción aleatoria ──
+    randomTitle: 'Yaunchu nankam aneamu',
+    randomShuffle: 'Mash nankam emkamu',
+    randomRequest: 'Nankamamu →',
+    randomLoading: 'Nankamkamu anemamu...',
+    randomTip: '💡 Shuk nankam hapiramu, emesramu shinami anemamu.',
     // ── DJ Login ──
     djSubtitle: 'DJ Akankamu',
     djLoginTitle: '↗ Juaramu',
