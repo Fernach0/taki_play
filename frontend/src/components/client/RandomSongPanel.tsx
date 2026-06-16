@@ -59,6 +59,7 @@ export function RandomSongPanel({ songs, onSelect }: RandomSongPanelProps) {
             {/* Cover */}
             <div className="relative mx-4 mt-4 mb-3 rounded-xl overflow-hidden aspect-square bg-dark-base">
               <SongCover
+                key={current.id}
                 songId={current.id}
                 title={current.title}
                 className="w-full h-full group-hover:scale-105 transition-transform duration-300"
@@ -99,7 +100,7 @@ export function RandomSongPanel({ songs, onSelect }: RandomSongPanelProps) {
           <div className="px-4 pb-4">
             <button
               onClick={shuffle}
-              className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dark-border bg-dark-base hover:border-inca-gold/50 hover:bg-dark-surface transition-all text-sm text-soil-brown hover:text-inca-gold"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-inca-gold hover:bg-inca-gold/80 transition-all text-sm font-bold text-dark-base shadow-md"
             >
               <Shuffle className="w-3.5 h-3.5" />
               {t.randomShuffle}
