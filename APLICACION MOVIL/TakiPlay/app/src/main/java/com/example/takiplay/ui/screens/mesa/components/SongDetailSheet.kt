@@ -25,7 +25,7 @@ import com.example.takiplay.ui.components.LanguageBadge
 import com.example.takiplay.ui.theme.*
 import com.example.takiplay.util.Strings
 import com.example.takiplay.util.coverUrlFor
-import com.example.takiplay.util.demoUrlFor
+import com.example.takiplay.util.fullUrlFor
 import com.example.takiplay.util.formatDuration
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -155,7 +155,7 @@ fun SongDetailSheet(
                                 isLoadingAudio = true
                                 try {
                                     mediaPlayer = MediaPlayer().apply {
-                                        setDataSource(demoUrlFor(song.id))
+                                        setDataSource(fullUrlFor(song.id))
                                         setOnPreparedListener {
                                             isLoadingAudio = false
                                             it.start()
@@ -200,10 +200,10 @@ fun SongDetailSheet(
                     Spacer(Modifier.width(16.dp))
                     Text(
                         text = when {
-                            audioError -> "No se pudo cargar el demo"
-                            isLoadingAudio -> "Cargando demo..."
-                            isPlaying -> "Reproduciendo demo..."
-                            else -> "Demo disponible"
+                            audioError -> "No se pudo cargar el audio"
+                            isLoadingAudio -> "Cargando audio..."
+                            isPlaying -> "Reproduciendo..."
+                            else -> "Escuchar canción"
                         },
                         color = when {
                             audioError -> AmberWarn

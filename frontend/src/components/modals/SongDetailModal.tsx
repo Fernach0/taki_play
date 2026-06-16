@@ -62,7 +62,7 @@ export function SongDetailModal({
         <p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
           <Play className="w-3 h-3" /> {t.preview}
         </p>
-        <audio ref={audioRef} controls className="w-full h-10" src={`${process.env.NEXT_PUBLIC_API_URL}/songs/${song.id}/demo`}>
+        <audio ref={audioRef} controls className="w-full h-10" src={`${process.env.NEXT_PUBLIC_API_URL}/songs/${song.id}/full`}>
           Tu navegador no soporta audio HTML5.
         </audio>
       </div>
