@@ -52,6 +52,7 @@ export function RandomSongPanel({ songs, onSelect }: RandomSongPanelProps) {
         </div>
 
         {current ? (
+          <>
           <button onClick={() => onSelect(current)} className="w-full text-left group block">
             {/* Cover */}
             <div className="relative mx-4 mt-4 mb-3 rounded-xl overflow-hidden aspect-square bg-dark-base">
@@ -102,6 +103,7 @@ export function RandomSongPanel({ songs, onSelect }: RandomSongPanelProps) {
               No me convence, otra
             </button>
           </div>
+          </>
         ) : (
           <div className="mx-4 my-4 aspect-square rounded-xl bg-dark-base flex items-center justify-center">
             <p className="text-soil-brown text-sm">Cargando canciones...</p>
