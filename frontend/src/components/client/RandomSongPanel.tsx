@@ -84,13 +84,24 @@ export function RandomSongPanel({ songs, onSelect }: RandomSongPanelProps) {
               </div>
             </div>
 
-            <div className="px-4 pb-4 flex items-center justify-between">
+            <div className="px-4 pb-3 flex items-center justify-between">
               <span className="text-xs text-soil-brown">{formatDuration(current.duration)}</span>
               <span className="text-xs font-semibold text-inca-gold group-hover:underline">
                 Pedir esta →
               </span>
             </div>
           </button>
+
+          {/* Botón cambiar canción */}
+          <div className="px-4 pb-4">
+            <button
+              onClick={shuffle}
+              className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dark-border bg-dark-base hover:border-inca-gold/50 hover:bg-dark-surface transition-all text-sm text-soil-brown hover:text-inca-gold"
+            >
+              <Shuffle className="w-3.5 h-3.5" />
+              No me convence, otra
+            </button>
+          </div>
         ) : (
           <div className="mx-4 my-4 aspect-square rounded-xl bg-dark-base flex items-center justify-center">
             <p className="text-soil-brown text-sm">Cargando canciones...</p>
