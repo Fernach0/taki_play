@@ -64,44 +64,44 @@ export function SongsPanel() {
       </div>
 
       <div className="overflow-x-auto rounded-xl border border-dark-border">
-        <table className="w-full text-sm">
+        <table className="w-full text-base">
           <thead>
             <tr className="border-b border-dark-border bg-dark-base/50">
-              <th className="text-left px-4 py-3 text-gray-400 font-medium">{t.colSong}</th>
-              <th className="text-left px-4 py-3 text-gray-400 font-medium">{t.colLanguage}</th>
-              <th className="text-left px-4 py-3 text-gray-400 font-medium">{t.colGenre}</th>
-              <th className="text-left px-4 py-3 text-gray-400 font-medium">{t.colDuration}</th>
-              <th className="text-left px-4 py-3 text-gray-400 font-medium">{t.colStatus}</th>
-              <th className="text-right px-4 py-3 text-gray-400 font-medium">{t.colActions}</th>
+              <th className="text-left px-5 py-4 text-gray-400 font-medium text-sm">{t.colSong}</th>
+              <th className="text-left px-5 py-4 text-gray-400 font-medium text-sm">{t.colLanguage}</th>
+              <th className="text-left px-5 py-4 text-gray-400 font-medium text-sm">{t.colGenre}</th>
+              <th className="text-left px-5 py-4 text-gray-400 font-medium text-sm">{t.colDuration}</th>
+              <th className="text-left px-5 py-4 text-gray-400 font-medium text-sm">{t.colStatus}</th>
+              <th className="text-right px-5 py-4 text-gray-400 font-medium text-sm">{t.colActions}</th>
             </tr>
           </thead>
           <tbody>
             {songs.map((song) => (
               <tr key={song.id} className="border-b border-dark-border/50 hover:bg-dark-base/30 transition-colors">
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <VinylThumbnail songId={song.id} title={song.title} size={40} />
+                <td className="px-5 py-4">
+                  <div className="flex items-center gap-4">
+                    <VinylThumbnail songId={song.id} title={song.title} size={56} />
                     <div>
-                      <p className="text-white font-medium truncate max-w-[200px]">{song.title}</p>
-                      <p className="text-gray-400 text-xs">{song.artist}</p>
+                      <p className="text-white font-semibold text-base truncate max-w-[240px]">{song.title}</p>
+                      <p className="text-gray-400 text-sm">{song.artist}</p>
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-3"><Badge variant={song.language} /></td>
-                <td className="px-4 py-3 text-gray-400">{song.genre}</td>
-                <td className="px-4 py-3 text-gray-400 font-mono">{formatDuration(song.duration)}</td>
-                <td className="px-4 py-3">
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${song.isActive ? 'bg-green-900/50 text-green-300' : 'bg-gray-800 text-gray-500'}`}>
+                <td className="px-5 py-4"><Badge variant={song.language} /></td>
+                <td className="px-5 py-4 text-gray-400">{song.genre}</td>
+                <td className="px-5 py-4 text-gray-400 font-mono">{formatDuration(song.duration)}</td>
+                <td className="px-5 py-4">
+                  <span className={`text-sm px-2.5 py-1 rounded-full ${song.isActive ? 'bg-green-900/50 text-green-300' : 'bg-gray-800 text-gray-500'}`}>
                     {song.isActive ? t.statusActive : t.statusInactive}
                   </span>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-5 py-4">
                   <div className="flex items-center gap-2 justify-end">
-                    <button onClick={() => editModal.open(song)} className="p-1.5 rounded-lg text-gray-400 hover:text-neon-cyan hover:bg-cyan-950/30 transition-colors">
-                      <Pencil className="w-3.5 h-3.5" />
+                    <button onClick={() => editModal.open(song)} className="p-2 rounded-lg text-gray-400 hover:text-neon-cyan hover:bg-cyan-950/30 transition-colors">
+                      <Pencil className="w-4 h-4" />
                     </button>
-                    <button onClick={() => deleteModal.open(song)} className="p-1.5 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-950/30 transition-colors">
-                      <Trash2 className="w-3.5 h-3.5" />
+                    <button onClick={() => deleteModal.open(song)} className="p-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-950/30 transition-colors">
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </td>
