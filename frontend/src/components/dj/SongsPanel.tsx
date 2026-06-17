@@ -11,6 +11,7 @@ import { Spinner } from '@/components/ui/Spinner';
 import { AddSongModal } from '@/components/modals/AddSongModal';
 import { EditSongModal } from '@/components/modals/EditSongModal';
 import { ConfirmDeleteModal } from '@/components/modals/ConfirmDeleteModal';
+import { VinylThumbnail } from '@/components/ui/VinylThumbnail';
 import { useModal } from '@/hooks/useModal';
 import { useT } from '@/hooks/useT';
 import { Song } from '@/types/song.types';
@@ -78,8 +79,13 @@ export function SongsPanel() {
             {songs.map((song) => (
               <tr key={song.id} className="border-b border-dark-border/50 hover:bg-dark-base/30 transition-colors">
                 <td className="px-4 py-3">
-                  <p className="text-white font-medium truncate max-w-[200px]">{song.title}</p>
-                  <p className="text-gray-400 text-xs">{song.artist}</p>
+                  <div className="flex items-center gap-3">
+                    <VinylThumbnail songId={song.id} title={song.title} size={40} />
+                    <div>
+                      <p className="text-white font-medium truncate max-w-[200px]">{song.title}</p>
+                      <p className="text-gray-400 text-xs">{song.artist}</p>
+                    </div>
+                  </div>
                 </td>
                 <td className="px-4 py-3"><Badge variant={song.language} /></td>
                 <td className="px-4 py-3 text-gray-400">{song.genre}</td>
