@@ -70,7 +70,10 @@ export class AuthService {
     const frontendUrl = this.configService.get<string>('FRONTEND_URL') || 'http://localhost:3001';
     const resetLink = `${frontendUrl}/dj/reset-password?token=${rawToken}`;
 
-    await this.mailerService.sendPasswordResetEmail(admin.email, resetLink);
+    // Enviar en segundo plano: la respuesta HTTP no espera al SMTP
+    this.mailerService.sendPasswordResetEmail(admin.email, resetLink).catch((err) => {
+      console.error(`Error enviando correo de recuperación a ${admin.email}:`, err.message);
+    });
 
     return genericResponse;
   }

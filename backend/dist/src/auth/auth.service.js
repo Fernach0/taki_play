@@ -65,7 +65,9 @@ let AuthService = class AuthService {
         });
         const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:3001';
         const resetLink = `${frontendUrl}/dj/reset-password?token=${rawToken}`;
-        await this.mailerService.sendPasswordResetEmail(admin.email, resetLink);
+        this.mailerService.sendPasswordResetEmail(admin.email, resetLink).catch((err) => {
+            console.error(`Error enviando correo de recuperación a ${admin.email}:`, err.message);
+        });
         return genericResponse;
     }
     async resetPassword(dto) {
