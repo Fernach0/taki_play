@@ -10,6 +10,7 @@ interface ModalWrapperProps {
   title: string;
   description?: string;
   children: React.ReactNode;
+  footer?: React.ReactNode;
   size?: 'sm' | 'md' | 'lg';
 }
 
@@ -25,6 +26,7 @@ export function ModalWrapper({
   title,
   description,
   children,
+  footer,
   size = 'md',
 }: ModalWrapperProps) {
   return (
@@ -49,9 +51,9 @@ export function ModalWrapper({
                 transition={{ duration: 0.2 }}
                 className={`fixed left-1/2 top-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2 px-4 ${sizes[size]}`}
               >
-                <div className="bg-dark-surface border border-inca-gold/30 rounded-2xl shadow-[0_0_40px_rgba(212,160,23,0.15)] overflow-hidden">
+                <div className="bg-dark-surface border border-inca-gold/30 rounded-2xl shadow-[0_0_40px_rgba(212,160,23,0.15)] overflow-hidden flex flex-col max-h-[85vh]">
                   {/* Header */}
-                  <div className="flex items-center justify-between p-6 border-b border-dark-border">
+                  <div className="flex items-center justify-between p-6 border-b border-dark-border flex-shrink-0">
                     <div>
                       <Dialog.Title className="text-lg font-bold text-warm-white font-serif">
                         {title}
@@ -69,8 +71,13 @@ export function ModalWrapper({
                     </button>
                   </div>
 
-                  {/* Body */}
-                  <div className="p-6 max-h-[70vh] overflow-y-auto">{children}</div>
+                  {/* Body — única zona con scroll */}
+                  <div className="p-6 overflow-y-auto flex-1 min-h-0">{children}</div>
+
+                  {/* Footer — fijo, siempre visible sin scrollear */}
+                  {footer && (
+                    <div className="p-6 pt-4 border-t border-dark-border flex-shrink-0">{footer}</div>
+                  )}
                 </div>
               </motion.div>
             </Dialog.Content>

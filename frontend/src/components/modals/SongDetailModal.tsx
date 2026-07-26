@@ -36,7 +36,27 @@ export function SongDetailModal({
   if (!song) return null;
 
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose} title={song.title}>
+    <ModalWrapper
+      isOpen={isOpen}
+      onClose={onClose}
+      title={song.title}
+      footer={
+        <div className="flex gap-3">
+          <Button variant="ghost" onClick={onClose} className="flex-1">
+            {t.close}
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => onRequest(song)}
+            disabled={queueFull || !isSessionReady}
+            loading={isRequesting}
+            className="flex-1"
+          >
+            {t.requestSong}
+          </Button>
+        </div>
+      }
+    >
       <div className="flex gap-4 mb-6">
         {/* Cover */}
         <div className="w-24 h-24 rounded-xl bg-dark-base border border-dark-border flex-shrink-0 overflow-hidden">
@@ -92,21 +112,6 @@ export function SongDetailModal({
           {t.queueFull}
         </p>
       )}
-
-      <div className="flex gap-3">
-        <Button variant="ghost" onClick={onClose} className="flex-1">
-          {t.close}
-        </Button>
-        <Button
-          variant="primary"
-          onClick={() => onRequest(song)}
-          disabled={queueFull || !isSessionReady}
-          loading={isRequesting}
-          className="flex-1"
-        >
-          {t.requestSong}
-        </Button>
-      </div>
     </ModalWrapper>
   );
 }
