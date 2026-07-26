@@ -22,8 +22,11 @@ let MailerService = MailerService_1 = class MailerService {
         const pass = this.configService.get('SMTP_PASS');
         this.from = this.configService.get('SMTP_FROM') || user || 'noreply@takiplay.com';
         this.transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
             auth: { user, pass },
+            family: 4,
             connectionTimeout: 15000,
             greetingTimeout: 15000,
             socketTimeout: 20000,

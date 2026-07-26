@@ -15,12 +15,18 @@ export class MailerService {
     this.from = this.configService.get<string>('SMTP_FROM') || user || 'noreply@takiplay.com';
 
     this.transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
       auth: { user, pass },
+      // Render (y otros contenedores) no tienen salida IPv6: Node 18+ intenta
+      // conectar por IPv6 primero (Happy Eyeballs) y eso cuelga con ENETUNREACH.
+      // Forzar family:4 desactiva ese intento dual-stack y va directo por IPv4.
+      family: 4,
       connectionTimeout: 15000,
       greetingTimeout: 15000,
       socketTimeout: 20000,
-    });
+    } as nodemailer.TransportOptions);
   }
 
   async sendPasswordResetEmail(to: string, resetLink: string): Promise<void> {
