@@ -3,7 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@nestjs/core");
 const common_1 = require("@nestjs/common");
 const path_1 = require("path");
+const dns = require("dns");
 const app_module_1 = require("./app.module");
+dns.setDefaultResultOrder('ipv4first');
 async function bootstrap() {
     console.log('Iniciando el servidor NestJS...');
     try {

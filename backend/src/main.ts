@@ -2,7 +2,12 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import * as dns from 'dns';
 import { AppModule } from './app.module';
+
+// Render no tiene salida IPv6: resolver DNS con IPv4 primero
+// (evita ENETUNREACH al conectar con smtp.gmail.com)
+dns.setDefaultResultOrder('ipv4first');
 
 async function bootstrap() {
   console.log('Iniciando el servidor NestJS...');
