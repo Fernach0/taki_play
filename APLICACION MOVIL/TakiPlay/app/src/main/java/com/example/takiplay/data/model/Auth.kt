@@ -14,6 +14,10 @@ data class LoginDto(
     val password: String,
 )
 
+data class ForgotPasswordDto(
+    val email: String,
+)
+
 data class LoginResponse(
     @SerializedName("access_token") val accessToken: String,
     val admin: Admin,

@@ -14,6 +14,18 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
+data class MyRequest(
+    val queueItemId: String,
+    val song: Song,
+)
+
+data class LyricsEntry(
+    val queueItemId: String,
+    val song: Song,
+    val status: String,
+    val position: Int,
+)
+
 data class MesaUiState(
     val songs: List<Song> = emptyList(),
     val loadingSongs: Boolean = true,
@@ -30,6 +42,8 @@ data class MesaUiState(
     val requestError: String? = null,
     val requestSuccess: String? = null,
     val isRequesting: Boolean = false,
+    val myRequests: List<MyRequest> = emptyList(),
+    val lyricsEntries: List<LyricsEntry> = emptyList(),
 )
 
 class MesaViewModel(
@@ -116,7 +130,7 @@ class MesaViewModel(
         viewModelScope.launch {
             _state.value = _state.value.copy(isRequesting = true, requestError = null)
             try {
-                ApiClient.queue.addToQueue(AddToQueueDto(
+                val queueItem = ApiClient.queue.addToQueue(AddToQueueDto(
                     songId    = song.id,
                     tableId   = s.tableId,
                     sessionId = s.sessionId,
@@ -124,6 +138,7 @@ class MesaViewModel(
                 _state.value = _state.value.copy(
                     isRequesting   = false,
                     requestSuccess = "\"${song.title}\" agregada a la cola",
+                    myRequests     = _state.value.myRequests + MyRequest(queueItem.id, song),
                 )
                 refreshQueue()
             } catch (e: Exception) {
@@ -147,9 +162,19 @@ class MesaViewModel(
         val tableId = _state.value.tableId ?: return
         try {
             val tq = ApiClient.queue.getTableQueue(tableId)
+            val myRequests = _state.value.myRequests.filter { req ->
+                tq.items.any { it.id == req.queueItemId }
+            }
+            val lyricsEntries = myRequests.mapNotNull { req ->
+                tq.items.find { it.id == req.queueItemId }?.let { item ->
+                    LyricsEntry(req.queueItemId, req.song, item.status, item.position)
+                }
+            }.sortedBy { it.position }
             _state.value = _state.value.copy(
-                queueItems   = tq.items,
-                pendingCount = tq.pendingCount,
+                queueItems     = tq.items,
+                pendingCount   = tq.pendingCount,
+                myRequests     = myRequests,
+                lyricsEntries  = lyricsEntries,
             )
         } catch (_: Exception) {}
     }

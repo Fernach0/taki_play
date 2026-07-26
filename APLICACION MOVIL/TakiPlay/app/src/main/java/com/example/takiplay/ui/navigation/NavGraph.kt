@@ -7,17 +7,20 @@ import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.example.takiplay.TakiPlayApp
 import com.example.takiplay.ui.screens.dj.dashboard.DJDashboardScreen
+import com.example.takiplay.ui.screens.dj.forgotpassword.DJForgotPasswordScreen
 import com.example.takiplay.ui.screens.dj.login.DJLoginScreen
 import com.example.takiplay.ui.screens.home.HomeScreen
 import com.example.takiplay.ui.screens.mesa.MesaScreen
 import com.example.takiplay.ui.screens.tableselection.TableSelectionScreen
+import com.example.takiplay.util.Translations
 
 object Routes {
-    const val HOME             = "home"
-    const val TABLE_SELECTION  = "table_selection"
-    const val MESA             = "mesa/{qrCode}"
-    const val DJ_LOGIN         = "dj_login"
-    const val DJ_DASHBOARD     = "dj_dashboard"
+    const val HOME               = "home"
+    const val TABLE_SELECTION    = "table_selection"
+    const val MESA               = "mesa/{qrCode}"
+    const val DJ_LOGIN           = "dj_login"
+    const val DJ_FORGOT_PASSWORD = "dj_forgot_password"
+    const val DJ_DASHBOARD       = "dj_dashboard"
 
     fun mesa(qrCode: String) = "mesa/$qrCode"
 }
@@ -76,6 +79,14 @@ fun TakiPlayNavGraph() {
                         popUpTo(Routes.DJ_LOGIN) { inclusive = true }
                     }
                 },
+                onForgotPassword = { navController.navigate(Routes.DJ_FORGOT_PASSWORD) },
+                onBack = { navController.popBackStack() },
+            )
+        }
+
+        composable(Routes.DJ_FORGOT_PASSWORD) {
+            DJForgotPasswordScreen(
+                t = Translations.get(lang),
                 onBack = { navController.popBackStack() },
             )
         }

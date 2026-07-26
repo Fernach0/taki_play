@@ -6,14 +6,18 @@ export declare class AdminController {
     create(createAdminDto: CreateAdminDto): Promise<{
         id: string;
         email: string;
+        resetPasswordToken: string | null;
         name: string;
+        resetPasswordExpires: Date | null;
         createdAt: Date;
         updatedAt: Date;
     }>;
     findAll(): Promise<{
         id: string;
         email: string;
+        resetPasswordToken: string | null;
         name: string;
+        resetPasswordExpires: Date | null;
         createdAt: Date;
         updatedAt: Date;
     }[]>;

@@ -33,6 +33,7 @@ fun DJLoginScreen(
     lang: String,
     prefs: PreferencesManager,
     onLoginSuccess: () -> Unit,
+    onForgotPassword: () -> Unit,
     onBack: () -> Unit,
 ) {
     val scope = rememberCoroutineScope()
@@ -191,6 +192,13 @@ fun DJLoginScreen(
                         Spacer(Modifier.width(8.dp))
                         Text(t.djLoginBtn, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                     }
+                }
+
+                TextButton(
+                    onClick = onForgotPassword,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(t.djForgotLink, color = SoilBrown, fontSize = 12.sp)
                 }
             }
         }

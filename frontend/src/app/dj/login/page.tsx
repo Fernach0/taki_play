@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Music } from 'lucide-react';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -102,6 +103,13 @@ export default function DJLoginPage() {
               {t.djLoginBtn}
             </Button>
           </form>
+
+          <Link
+            href="/dj/forgot-password"
+            className="mt-4 block text-center text-sm text-soil-brown hover:text-sand-beige"
+          >
+            {t.djForgotLink}
+          </Link>
         </div>
       </div>
     </div>

@@ -75,12 +75,25 @@ DATABASE_URL="postgresql://postgres:admin@localhost:5432/taki_karaoke?schema=pub
 JWT_SECRET="taki_play_secret_interculturalidad_2026_jwt_key_muy_segura"
 JWT_EXPIRES_IN="8h"
 PORT=3000
+
+# Correo (recuperación de contraseña) — Gmail SMTP
+SMTP_USER="tu-correo@gmail.com"
+SMTP_PASS="contraseña-de-aplicacion-de-16-caracteres"
+SMTP_FROM="tu-correo@gmail.com"
+
+# URL del frontend (para armar el link de "restablecer contraseña")
+FRONTEND_URL="http://localhost:3001"
 ```
 
 > **Importante:** Si durante la instalación de PostgreSQL usaste una contraseña diferente a `admin`, actualiza la URL así:
 > ```
 > DATABASE_URL="postgresql://postgres:TU_CONTRASEÑA@localhost:5432/taki_karaoke?schema=public"
 > ```
+
+> **Sobre `SMTP_USER` / `SMTP_PASS`:** No uses la contraseña normal de tu cuenta de Gmail — Google la rechaza para apps externas. Debes generar una **contraseña de aplicación**:
+> 1. Activa la verificación en 2 pasos en tu cuenta de Gmail: https://myaccount.google.com/security
+> 2. Ve a https://myaccount.google.com/apppasswords, elige un nombre (ej. "Taki Play") y genera el código de 16 caracteres.
+> 3. Pega ese código en `SMTP_PASS`. En producción (Render), agrega estas mismas variables (`SMTP_USER`, `SMTP_PASS`, `FRONTEND_URL`) en el panel de variables de entorno del servicio.
 
 ### Frontend — archivo `frontend/.env.local`
 
@@ -122,11 +135,16 @@ npx prisma migrate dev --name init
 ```
 
 Este comando crea todas las tablas en la base de datos `taki_karaoke`:
-- `Admin`
+- `Admin` (incluye los campos de recuperación de contraseña)
 - `Table` (mesas)
 - `TableSession`
 - `Song`
 - `QueueItem`
+
+> Si el proyecto ya existía antes de esta guía y solo necesitas agregar los campos de recuperación de contraseña, corre:
+> ```bash
+> npx prisma migrate dev --name add_password_reset
+> ```
 
 ### 6.2 Cargar datos iniciales (seed)
 ```bash
@@ -178,6 +196,8 @@ Una vez que ambos servidores estén corriendo:
 |------|-------------|
 | `http://localhost:3001` | Página principal (landing con instrucción QR) |
 | `http://localhost:3001/dj/login` | Panel de administración DJ |
+| `http://localhost:3001/dj/forgot-password` | Solicitar recuperación de contraseña |
+| `http://localhost:3001/dj/reset-password?token=...` | Completar el restablecimiento (link recibido por correo) |
 | `http://localhost:3000/api/v1` | API Backend (NestJS) |
 
 ### Credenciales del panel DJ

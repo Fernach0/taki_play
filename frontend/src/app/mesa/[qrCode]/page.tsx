@@ -16,6 +16,7 @@ import { SongCard } from '@/components/client/SongCard';
 import { SongFilters } from '@/components/client/SongFilters';
 import { QueuePanel } from '@/components/client/QueuePanel';
 import { RandomSongPanel } from '@/components/client/RandomSongPanel';
+import { LyricsPanel, LyricsAccordion, LyricsQueueEntry } from '@/components/client/LyricsPanel';
 import { SongDetailModal } from '@/components/modals/SongDetailModal';
 import { VinylAnimation } from '@/components/ui/VinylAnimation';
 import { Spinner } from '@/components/ui/Spinner';
@@ -77,6 +78,22 @@ export default function MesaPage() {
 
   const { items: queueItems, pendingCount } = useQueue(tableId);
 
+  // Letra de las canciones que este cliente pidió, mientras sigan en la cola
+  const [myRequests, setMyRequests] = useState<{ queueItemId: string; song: Song }[]>([]);
+
+  useEffect(() => {
+    setMyRequests((prev) => prev.filter((r) => queueItems.some((q) => q.id === r.queueItemId)));
+  }, [queueItems]);
+
+  const lyricsEntries: LyricsQueueEntry[] = myRequests
+    .map((r) => {
+      const queueItem = queueItems.find((q) => q.id === r.queueItemId);
+      if (!queueItem) return null;
+      return { queueItemId: r.queueItemId, song: r.song, status: queueItem.status, position: queueItem.position };
+    })
+    .filter((entry): entry is LyricsQueueEntry => entry !== null)
+    .sort((a, b) => a.position - b.position);
+
   const requestMutation = useMutation({
     mutationFn: (song: Song) => {
       const currentTableId = useSessionStore.getState().tableId;
@@ -92,7 +109,8 @@ export default function MesaPage() {
         sessionId: currentSessionId,
       });
     },
-    onSuccess: (_, song) => {
+    onSuccess: (queueItem, song) => {
+      setMyRequests((prev) => [...prev, { queueItemId: queueItem.id, song }]);
       qc.invalidateQueries({ queryKey: ['queue', tableId] });
       toast.success(`"${song.title}" agregada a la cola`);
       songModal.close();
@@ -129,7 +147,7 @@ export default function MesaPage() {
 
       {/* Header */}
       <header className="sticky top-0 z-30 bg-dark-base/90 backdrop-blur-sm border-b border-dark-border px-4 py-3">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="text-lg font-bold text-warm-white font-serif">Taki Play</h1>
             {tableNumber && (
@@ -162,9 +180,12 @@ export default function MesaPage() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 py-4">
-        <div className="lg:grid lg:grid-cols-[1fr_280px] lg:gap-6">
-          {/* ── Columna izquierda: buscador + filtros + canciones ── */}
+      <main className="max-w-7xl mx-auto px-4 py-4">
+        <div className="lg:grid lg:grid-cols-[1fr_280px] lg:gap-6 xl:grid-cols-[280px_1fr_280px]">
+          {/* ── Columna izquierda: letra de tu canción en cola ── */}
+          <LyricsPanel entries={lyricsEntries} />
+
+          {/* ── Columna central: buscador + filtros + canciones ── */}
           <div className="space-y-4">
             {/* Buscador */}
             <div className="relative">
@@ -181,6 +202,9 @@ export default function MesaPage() {
             {/* Filtros de idioma de canción */}
             <SongFilters selected={langFilter} onChange={setLangFilter} />
 
+            {/* Letra de tu canción en cola (versión plegable para móvil) */}
+            <LyricsAccordion entries={lyricsEntries} />
+
             {/* Lista de canciones */}
             {isLoading ? (
               <div className="flex justify-center py-16">
@@ -191,7 +215,7 @@ export default function MesaPage() {
                 <p>{t.noSongs}</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="grid gap-3 justify-center grid-cols-[repeat(auto-fit,minmax(130px,160px))]">
                 {songs.map((song) => (
                   <SongCard key={song.id} song={song} onClick={handleSongClick} />
                 ))}

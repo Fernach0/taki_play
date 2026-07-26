@@ -131,6 +131,11 @@ fun MesaScreen(
                     SongFilters(selected = state.langFilter, onChange = { vm.setLangFilter(it) }, t = t)
                 }
 
+                // Letra de tu canción en cola
+                Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp)) {
+                    LyricsBottomPanel(entries = state.lyricsEntries, t = t)
+                }
+
                 // Song grid
                 Box(modifier = Modifier.weight(1f)) {
                     when {
