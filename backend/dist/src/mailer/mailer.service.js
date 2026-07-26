@@ -14,19 +14,33 @@ exports.MailerService = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const nodemailer = require("nodemailer");
+const dns_1 = require("dns");
+const GMAIL_HOST = 'smtp.gmail.com';
+const GMAIL_PORT = 465;
 let MailerService = MailerService_1 = class MailerService {
     constructor(configService) {
         this.configService = configService;
         this.logger = new common_1.Logger(MailerService_1.name);
-        const user = this.configService.get('SMTP_USER');
-        const pass = this.configService.get('SMTP_PASS');
-        this.from = this.configService.get('SMTP_FROM') || user || 'noreply@takiplay.com';
-        this.transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: 465,
+        this.cachedIp = null;
+        this.user = this.configService.get('SMTP_USER') || '';
+        this.pass = this.configService.get('SMTP_PASS') || '';
+        this.from = this.configService.get('SMTP_FROM') || this.user || 'noreply@takiplay.com';
+    }
+    async resolveIp(forceRefresh = false) {
+        if (this.cachedIp && !forceRefresh)
+            return this.cachedIp;
+        const { address } = await dns_1.promises.lookup(GMAIL_HOST, { family: 4 });
+        this.cachedIp = address;
+        this.logger.log(`Resuelto ${GMAIL_HOST} -> ${address} (IPv4)`);
+        return address;
+    }
+    buildTransporter(host) {
+        return nodemailer.createTransport({
+            host,
+            port: GMAIL_PORT,
             secure: true,
-            auth: { user, pass },
-            family: 4,
+            auth: { user: this.user, pass: this.pass },
+            tls: { servername: GMAIL_HOST },
             connectionTimeout: 15000,
             greetingTimeout: 15000,
             socketTimeout: 20000,
@@ -45,12 +59,21 @@ let MailerService = MailerService_1 = class MailerService {
         <p>Este enlace expira en 1 hora. Si no solicitaste este cambio, puedes ignorar este correo.</p>
       </div>
     `;
-        await this.transporter.sendMail({
+        const mail = {
             from: `"Taki Play" <${this.from}>`,
             to,
             subject: 'Recupera tu contraseña — Taki Play',
             html,
-        });
+        };
+        try {
+            const ip = await this.resolveIp();
+            await this.buildTransporter(ip).sendMail(mail);
+        }
+        catch (err) {
+            this.logger.warn(`Primer intento de envío falló (${err.message}), reintentando con IP fresca`);
+            const freshIp = await this.resolveIp(true);
+            await this.buildTransporter(freshIp).sendMail(mail);
+        }
         this.logger.log(`Correo de recuperación enviado a ${to}`);
     }
 };

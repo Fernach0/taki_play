@@ -1,32 +1,48 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
+import { promises as dns } from 'dns';
+
+const GMAIL_HOST = 'smtp.gmail.com';
+const GMAIL_PORT = 465;
 
 @Injectable()
 export class MailerService {
   private readonly logger = new Logger(MailerService.name);
-  private readonly transporter: nodemailer.Transporter;
+  private readonly user: string;
+  private readonly pass: string;
   private readonly from: string;
+  private cachedIp: string | null = null;
 
   constructor(private readonly configService: ConfigService) {
-    const user = this.configService.get<string>('SMTP_USER');
-    const pass = this.configService.get<string>('SMTP_PASS');
+    this.user = this.configService.get<string>('SMTP_USER') || '';
+    this.pass = this.configService.get<string>('SMTP_PASS') || '';
+    this.from = this.configService.get<string>('SMTP_FROM') || this.user || 'noreply@takiplay.com';
+  }
 
-    this.from = this.configService.get<string>('SMTP_FROM') || user || 'noreply@takiplay.com';
+  // nodemailer NO reenvía la opción `family` al socket subyacente (confirmado en su
+  // código fuente: smtp-connection/index.js solo copia host/port/localAddress/tls).
+  // Por eso resolvemos la IPv4 nosotros mismos y se la pasamos como `host` literal:
+  // así el socket nunca intenta la ruta IPv6 que Render no puede alcanzar (ENETUNREACH).
+  private async resolveIp(forceRefresh = false): Promise<string> {
+    if (this.cachedIp && !forceRefresh) return this.cachedIp;
+    const { address } = await dns.lookup(GMAIL_HOST, { family: 4 });
+    this.cachedIp = address;
+    this.logger.log(`Resuelto ${GMAIL_HOST} -> ${address} (IPv4)`);
+    return address;
+  }
 
-    this.transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
+  private buildTransporter(host: string): nodemailer.Transporter {
+    return nodemailer.createTransport({
+      host,
+      port: GMAIL_PORT,
       secure: true,
-      auth: { user, pass },
-      // Render (y otros contenedores) no tienen salida IPv6: Node 18+ intenta
-      // conectar por IPv6 primero (Happy Eyeballs) y eso cuelga con ENETUNREACH.
-      // Forzar family:4 desactiva ese intento dual-stack y va directo por IPv4.
-      family: 4,
+      auth: { user: this.user, pass: this.pass },
+      tls: { servername: GMAIL_HOST },
       connectionTimeout: 15000,
       greetingTimeout: 15000,
       socketTimeout: 20000,
-    } as nodemailer.TransportOptions);
+    });
   }
 
   async sendPasswordResetEmail(to: string, resetLink: string): Promise<void> {
@@ -42,13 +58,23 @@ export class MailerService {
         <p>Este enlace expira en 1 hora. Si no solicitaste este cambio, puedes ignorar este correo.</p>
       </div>
     `;
-
-    await this.transporter.sendMail({
+    const mail = {
       from: `"Taki Play" <${this.from}>`,
       to,
       subject: 'Recupera tu contraseña — Taki Play',
       html,
-    });
+    };
+
+    try {
+      const ip = await this.resolveIp();
+      await this.buildTransporter(ip).sendMail(mail);
+    } catch (err) {
+      // La IP cacheada pudo quedar obsoleta (Google rota IPs de smtp.gmail.com);
+      // reintentar una vez con una resolución fresca antes de darnos por vencidos.
+      this.logger.warn(`Primer intento de envío falló (${err.message}), reintentando con IP fresca`);
+      const freshIp = await this.resolveIp(true);
+      await this.buildTransporter(freshIp).sendMail(mail);
+    }
 
     this.logger.log(`Correo de recuperación enviado a ${to}`);
   }
