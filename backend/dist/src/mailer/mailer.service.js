@@ -16,7 +16,7 @@ const config_1 = require("@nestjs/config");
 const nodemailer = require("nodemailer");
 const dns_1 = require("dns");
 const GMAIL_HOST = 'smtp.gmail.com';
-const GMAIL_PORT = 465;
+const GMAIL_PORT = 587;
 let MailerService = MailerService_1 = class MailerService {
     constructor(configService) {
         this.configService = configService;
@@ -38,7 +38,8 @@ let MailerService = MailerService_1 = class MailerService {
         return nodemailer.createTransport({
             host,
             port: GMAIL_PORT,
-            secure: true,
+            secure: false,
+            requireTLS: true,
             auth: { user: this.user, pass: this.pass },
             tls: { servername: GMAIL_HOST },
             connectionTimeout: 15000,

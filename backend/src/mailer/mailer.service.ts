@@ -4,7 +4,9 @@ import * as nodemailer from 'nodemailer';
 import { promises as dns } from 'dns';
 
 const GMAIL_HOST = 'smtp.gmail.com';
-const GMAIL_PORT = 465;
+// 587 (STARTTLS) en vez de 465 (TLS implícito): algunos hostings gratuitos
+// (Render incluido) bloquean/filtran 465 mientras dejan pasar 587.
+const GMAIL_PORT = 587;
 
 @Injectable()
 export class MailerService {
@@ -36,7 +38,8 @@ export class MailerService {
     return nodemailer.createTransport({
       host,
       port: GMAIL_PORT,
-      secure: true,
+      secure: false, // STARTTLS: empieza en texto plano y sube a TLS con el comando STARTTLS
+      requireTLS: true, // nunca enviar credenciales si el STARTTLS falla
       auth: { user: this.user, pass: this.pass },
       tls: { servername: GMAIL_HOST },
       connectionTimeout: 15000,
